@@ -1,0 +1,11 @@
+/bin
+/bundle
+/.DS_Store
+/.irb-history
+/.bash_history
+/.passenger
+/.bundle
+/.ruby-uuid
+/tmp
+/public/assets/*.min.css
+/public/assets/*.min.js
