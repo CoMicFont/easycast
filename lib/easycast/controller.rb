@@ -14,6 +14,10 @@ module Easycast
       Assets.call(env)
     end
 
+    get "/fonts/:font" do |f|
+      send_file Path.dir/"webassets/fonts"/f
+    end
+
     ### Mustache configuration
 
     register Mustache::Sinatra

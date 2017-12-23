@@ -36,6 +36,22 @@ module Easycast
         config.scene(scene_index)
       end
 
+      def previous_index
+        (scene_index == 0 ? scenes.size : scene_index) - 1
+      end
+
+      def previous_href
+        "/scene/#{previous_index}"
+      end
+
+      def next_index
+        (scene_index + 1) % scenes.size
+      end
+
+      def next_href
+        "/scene/#{next_index}"
+      end
+
     end
   end
 end

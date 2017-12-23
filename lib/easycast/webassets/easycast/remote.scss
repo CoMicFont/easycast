@@ -19,10 +19,38 @@ ul.remote {
     border-color: blue;
     color: blue;
   }
+  > li.nav {
+    font-size: 1.5em;
+    padding: 10px;
+    > .left {
+      float: left;
+    }
+    > .right {
+      float: right;
+    }
+    &:after {
+      content: "";
+      display: block;
+      clear: both;
+    }
+    a,
+    a:visited {
+      color: blue;
+    }
+  }
 }
 
 body.display ul.remote {
   position: fixed;
   top: 2%;
   right: 2%;
+}
+
+body.remote {
+  padding: 2%;
+  ul.remote {
+    position: relative;
+    width: 100%;
+    margin: auto;
+  }
 }

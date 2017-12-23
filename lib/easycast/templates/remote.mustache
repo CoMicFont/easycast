@@ -4,4 +4,16 @@
     <a href="/scene/{{index}}">{{name}}</a>
   </li>
   {{/scenes}}
+  <li class="nav">
+    <div class="left">
+      <a href="{{previous_href}}"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+    </div>
+    <div class="right">
+      <a href="{{next_href}}"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+    </div>
+  </li>
 </ul>
+
+<script>
+refreshDisplay({{scene_index}})
+</script>
