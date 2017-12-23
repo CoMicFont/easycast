@@ -6,11 +6,11 @@ module Easycast
     ### Assets handling
 
     Assets = Sprockets::Environment.new
-    Assets.append_path Path.dir/('assets')
+    Assets.append_path Path.dir/('webassets')
     Assets.css_compressor = :scss
 
-    get "/assets/*" do
-      env["PATH_INFO"].sub!("/assets", "")
+    get "/webassets/*" do
+      env["PATH_INFO"].sub!("/webassets", "")
       Assets.call(env)
     end
 
@@ -38,14 +38,14 @@ module Easycast
 
     set :scene_index, 0
 
-    def self.load_scenes
-      set :scenes, Scenes.load(SCENES_FOLDER)
+    def self.load_config
+      set :config, Config.load(SCENES_FOLDER)
       set :load_error, nil
     rescue => ex
-      set :scenes, nil
+      set :config, nil
       set :load_error, ex
     end
-    load_scenes
+    load_config
 
     ### Routes
 
@@ -87,13 +87,13 @@ module Easycast
   private
 
     def serve(view, data = {})
-      settings.load_scenes
+      settings.load_config
       if has_error?
         @body_class = "error"
         @load_error = settings.load_error
         mustache(:error)
       else
-        @scenes = settings.scenes
+        @config = settings.config
         @scene_index = settings.scene_index
         mustache(view)
       end

@@ -7,19 +7,19 @@ module Easycast
       Easycast::Controller
     end
 
-    describe "GET /assets/..." do
+    describe "GET /webassets/..." do
 
-      it 'serves the assets without trouble' do
-        get '/assets/easycast.css'
+      it 'serves the webassets without trouble' do
+        get '/webassets/easycast.css'
         expect(last_response.status).to eql(200)
-        get '/assets/easycast.js'
+        get '/webassets/easycast.js'
         expect(last_response.status).to eql(200)
       end
 
-      it 'serves the vendor assets without trouble' do
-        get '/assets/vendor.css'
+      it 'serves the vendor webassets without trouble' do
+        get '/webassets/vendor.css'
         expect(last_response.status).to eql(200)
-        get '/assets/vendor.js'
+        get '/webassets/vendor.js'
         expect(last_response.status).to eql(200)
       end
 

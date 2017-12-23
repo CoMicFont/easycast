@@ -1,3 +1,3 @@
 module Easycast
-  class ScenesError < StandardError; end
+  class ConfigError < StandardError; end
 end

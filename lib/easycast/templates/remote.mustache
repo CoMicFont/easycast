@@ -1,7 +1,7 @@
 <ul class="remote">
-  {{#scenes.each}}
-  <li>
+  {{#scenes}}
+  <li class="{{css_class}}">
     <a href="/scene/{{index}}">{{name}}</a>
   </li>
-  {{/scenes.each}}
+  {{/scenes}}
 </ul>

@@ -3,7 +3,7 @@ module Easycast
   # This class is the ruby live version of the content found in
   # `scenes.yml`.
   #
-  class Scenes < OpenStruct
+  class Config < OpenStruct
 
     SCHEMA = Finitio::DEFAULT_SYSTEM.parse <<-FIO
       AssetPath = String( s | s.size>0 )
@@ -28,13 +28,13 @@ module Easycast
     #         structure. 
     #
     def self.load(folder)
-      raise ScenesError, "Scenes folder does not exist `#{folder}`" unless folder.directory?
+      raise ConfigError, "Scenes folder does not exist `#{folder}`" unless folder.directory?
       yml = folder/"scenes.yml"
-      raise ScenesError, "Missing scenes index file `#{yml}`" unless yml.file?
+      raise ConfigError, "Missing scenes index file `#{yml}`" unless yml.file?
       yml_data = yml.load
       new SCHEMA.dress(yml_data)
     rescue Finitio::Error => ex
-      raise ScenesError, "Corrupted scenes index file\n#{ex.root_cause.message}"
+      raise ConfigError, "Corrupted scenes index file\n#{ex.root_cause.message}"
     end
 
     #
@@ -54,5 +54,5 @@ module Easycast
       end
     end
 
-  end # class Scenes
+  end # class Config
 end # module Easycast

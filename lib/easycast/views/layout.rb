@@ -14,8 +14,18 @@ module Easycast
         "Easycast | #{subtitle}"
       end
 
+      def config
+        @config
+      end
+
       def scenes
-        @scenes
+        config.scenes.each_with_index.map{|s, i|
+          s.merge({
+            index: i,
+            active: (i == scene_index),
+            css_class: (i == scene_index ? "active" : "")
+          })
+        }
       end
 
       def scene_index
@@ -23,7 +33,7 @@ module Easycast
       end
 
       def current_scene
-        scenes.scene(scene_index)
+        config.scene(scene_index)
       end
 
     end
