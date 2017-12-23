@@ -9,6 +9,7 @@ module Easycast
       AssetPath = String( s | s.size>0 )
       Cast = {
         display: Integer
+        remote: Boolean
         assets: [AssetPath]
       }
       Scene = {

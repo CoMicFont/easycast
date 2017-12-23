@@ -1,3 +1,24 @@
-body.remote {
+ul.remote {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 15%;
+  min-width: 150px;
+  > li + li {
+    margin-top: 10px;
+  }
+  > li > a {
+    display: block;
+    border: 3px solid #888;
+    border-radius: 10px;
+    padding: 10px;
+    color: #888;
+    text-decoration: none;
+  }
+}
 
+body.display ul.remote {
+  position: fixed;
+  top: 2%;
+  right: 2%;
 }
