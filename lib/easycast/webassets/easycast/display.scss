@@ -3,11 +3,12 @@ body.display.without-remote {
   padding: 0;
   width: 100%;
   height: 100%;
-  svg {
+  svg,
+  img {
     background: transparent;
     position: absolute;
     top: 0;
-    width: 100%;
+    width: auto;
     height: 100%;
   }
 }
