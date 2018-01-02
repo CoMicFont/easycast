@@ -55,6 +55,16 @@ module Easycast
 
     ### Routes
 
+    #
+    # Returns the .html file of the root page, allowing
+    # to choose a display
+    #
+    get "/" do
+      @body_class = "home"
+      content_type :html
+      serve :home
+    end
+
     ##
     ## Returns the .html file of the n-th display
     ##
@@ -116,6 +126,7 @@ module Easycast
   end # class Controller
 end # module Easycast
 require_relative 'views/layout'
+require_relative 'views/home'
 require_relative 'views/display'
 require_relative 'views/remote'
 require_relative 'views/error'

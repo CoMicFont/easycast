@@ -18,6 +18,15 @@ module Easycast
         @config
       end
 
+      def displays
+        (0..1).map do |index|
+          {
+            index: index,
+            name: "Display #{index}"
+          }
+        end
+      end
+
       def scenes
         config.scenes.each_with_index.map{|s, i|
           s.merge({

@@ -1,0 +1,12 @@
+<p>Please choose a display to use here</p>
+
+<ul class="button-list displays">
+  <li>
+    <a href="/remote">Remote control</a>
+  </li>
+  {{#displays}}
+  <li>
+    <a href="/display/{{index}}">{{name}}</a>
+  </li>
+  {{/displays}}
+</ul>
