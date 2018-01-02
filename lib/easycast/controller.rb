@@ -5,6 +5,8 @@ module Easycast
 
     ### Assets handling
 
+    set :public_folder, SCENES_FOLDER/("assets")
+
     Assets = Sprockets::Environment.new
     Assets.append_path Path.dir/('webassets')
     Assets.css_compressor = :scss

@@ -13,6 +13,7 @@ module Easycast
       case path
       when /.html$/ then Asset::Html.new(path)
       when /.svg$/  then Asset::Svg.new(path)
+      when /.png$/  then Asset::Png.new(path)
       end
     end
 
@@ -39,6 +40,14 @@ module Easycast
       end
 
     end # class Svg
+
+    class Png < Asset
+
+      def to_html
+        %Q{<img src="/#{@path}">}
+      end
+
+    end # class Png
 
   end # class Asset
 end # module Easycast
