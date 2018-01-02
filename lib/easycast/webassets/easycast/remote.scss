@@ -1,14 +1,12 @@
-body.display ul.remote {
-  position: fixed;
-  top: 2%;
-  right: 2%;
-}
-
 body.remote {
   padding: 2%;
+  background-color: #222;
   ul.remote {
     position: relative;
     width: 100%;
     margin: auto;
+    > li > a {
+      font-size: 20px;
+    }
   }
 }

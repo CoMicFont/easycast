@@ -28,7 +28,7 @@ module Easycast
     class Html < Asset
 
       def to_html
-        file_contents
+        "<article>" + file_contents + "</article>"
       end
 
     end # class Html

@@ -2,8 +2,6 @@ ul.button-list {
   list-style: none;
   padding: 0;
   margin: 0;
-  width: 15%;
-  min-width: 150px;
   > li + li {
     margin-top: 10px;
   }
@@ -15,27 +13,21 @@ ul.button-list {
     color: #555;
     text-decoration: none;
   }
-  > li.active > a {
-    border-color: blue;
-    color: blue;
+  > li.active > a,
+  > li.active > a:hover {
+    color: white;
+    border-color: white;
   }
   > li.nav {
     font-size: 1.5em;
     padding: 10px;
-    > .left {
-      float: left;
-    }
-    > .right {
-      float: right;
-    }
-    &:after {
-      content: "";
-      display: block;
-      clear: both;
-    }
-    a,
-    a:visited {
-      color: blue;
+    text-align: center;
+    > a,
+    > a:hover,
+    > a:visited {
+      color: #ccc;
+      display: inline;
+      border: none;
     }
   }
 }
