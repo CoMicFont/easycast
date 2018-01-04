@@ -1,0 +1,6 @@
+@lxpanel --profile LXDE-pi
+@pcmanfm --desktop --profile LXDE-pi
+@xscreensaver -no-splash
+@point-rpi
+@chromium-browser --kiosk --incognito --disable-session-crashed-bubble http://easycast/display/0
+@unclutter -idle 0.1
