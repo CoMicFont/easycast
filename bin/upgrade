@@ -1,0 +1,4 @@
+#!/bin/sh
+git remote update
+git pull origin master
+bundle install
