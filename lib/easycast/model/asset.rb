@@ -14,6 +14,9 @@ module Easycast
       when /.html$/ then Asset::Html.new(path)
       when /.svg$/  then Asset::Svg.new(path)
       when /.png$/  then Asset::Png.new(path)
+      when /.mp4$/  then Asset::Mp4.new(path)
+      when /.webm$/ then Asset::Webm.new(path)
+      when /.ogg$/  then Asset::Ogg.new(path)
       end
     end
 
@@ -48,6 +51,39 @@ module Easycast
       end
 
     end # class Png
+
+    class Mp4 < Asset
+
+      def to_html
+        %Q{<video autoplay>
+  <source src="/#{@path}" type="video/mp4">
+This browser does not support the video tag.
+</video>}
+      end
+
+    end # class Mp4
+
+    class Webm < Asset
+
+      def to_html
+        %Q{<video autoplay>
+  <source src="/#{@path}" type="video/webm">
+This browser does not support the video tag.
+</video>}
+      end
+
+    end # class Webm
+
+    class Ogg < Asset
+
+      def to_html
+        %Q{<video autoplay>
+  <source src="/#{@path}" type="video/ogg">
+This browser does not support the video tag.
+</video>}
+      end
+
+    end # class Ogg
 
   end # class Asset
 end # module Easycast
