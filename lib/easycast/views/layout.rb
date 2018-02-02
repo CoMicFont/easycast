@@ -27,38 +27,79 @@ module Easycast
         end
       end
 
-      def scenes
-        config.scenes.each_with_index.map{|s, i|
-          s.merge({
+      #
+      # nodes indexed by a search in depth
+      #
+      def nodes
+        recursively_decorate_nodes([], config.nodes, 0)
+      end
+
+      private def recursively_decorate_nodes(acc, remaining_nodes, i)
+        if remaining_nodes.empty? then acc
+        else
+          n, *tail = *remaining_nodes
+          node = n.merge({
             index: i,
-            active: (i == scene_index),
-            css_class: (i == scene_index ? "active" : "")
+            name: (n[:name] ? n[:name] : config.scene_by_id(n[:scene])[:name]),
+            active: (i == node_index),
+            css_class: (i == node_index ? "active" : "")
           })
-        }
+          children = node[:children] ? node[:children] : []
+          recursively_decorate_nodes(acc + [node], children + tail, i+1)
+        end
       end
 
-      def scene_index
-        @scene_index
+      def node_index
+        @node_index
       end
 
+      def current_node
+        config.node(node_index)
+      end
+
+      #
+      # when current node has no scene field
+      # the current scene is the first scene found by a search in depth
+      # in the tree depicted by the current node
+      #
       def current_scene
-        config.scene(scene_index)
+        scene_id = first_scene_id_in_depth([current_node])
+        config.scene_by_id(scene_id)
+      end
+
+      #
+      # Finds the first scene id encountered while traversing in depth
+      # the tree depicted by the given node array.
+      # Leaves must have a scene.
+      # This is required for displaying a scene even if
+      # the current node does not have one.
+      #
+      def first_scene_id_in_depth(nodes)
+        if nodes.empty? then return nil
+        else
+          head, *tail = *nodes
+          scene_id = head[:scene]
+          if scene_id then return scene_id
+          else
+            first_scene_id_in_depth(head[:children] + tail)
+          end
+        end
       end
 
       def previous_index
-        (scene_index == 0 ? scenes.size : scene_index) - 1
+        (node_index == 0 ? nodes.size : node_index) - 1
       end
 
       def previous_href
-        "/scene/#{previous_index}"
+        "/node/#{previous_index}"
       end
 
       def next_index
-        (scene_index + 1) % scenes.size
+        (node_index + 1) % nodes.size
       end
 
       def next_href
-        "/scene/#{next_index}"
+        "/node/#{next_index}"
       end
 
     end

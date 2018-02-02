@@ -1,9 +1,9 @@
 <ul class="button-list remote">
-  {{#scenes}}
+  {{#nodes}}
   <li class="{{css_class}}">
-    <a href="/scene/{{index}}">{{name}}</a>
+    <a href="/node/{{index}}">{{name}}</a>
   </li>
-  {{/scenes}}
+  {{/nodes}}
   <li class="nav">
     <a href="{{previous_href}}"><i class="fa fa-backward" aria-hidden="true"></i></a>
     <a href="{{next_href}}"><i class="fa fa-forward" aria-hidden="true"></i></a>
@@ -11,5 +11,5 @@
 </ul>
 
 <script>
-refreshDisplay({{scene_index}})
+refreshDisplay({{node_index}})
 </script>

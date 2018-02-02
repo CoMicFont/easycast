@@ -28,6 +28,7 @@ module Easycast
 end
 require_relative 'easycast/error'
 require_relative 'easycast/model/config'
+require_relative 'easycast/model/node'
 require_relative 'easycast/model/scene'
 require_relative 'easycast/model/cast'
 require_relative 'easycast/model/asset'

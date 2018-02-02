@@ -47,20 +47,44 @@ module Easycast
     end
 
     #
-    # Returns the index-th scene as a Scene object
+    # Returns the index-th node as a Node object
+    # the nodes are indexed by a depth-search in the tree of nodes
+    # example:
+    #   t =     a          t[0] = a     t[5] = f
+    #          / \         t[1] = b
+    #         b   c        t[2] = d
+    #        /   / \       t[3] = c
+    #       d   e   f      t[4] = e
     #
-    def scene(index)
-      Scene.new(scenes[index].merge(index: index))
+    def node(index)
+      rec_node(index, nodes, index)
+    end
+
+    private def rec_node(search_index, remaining_nodes, index)
+      if remaining_nodes.empty? then raise ArgumentError, "Index out of nodes bounds: " + index.to_s
+      else
+        n, *tail = *remaining_nodes
+        if search_index == 0 then Node.new(n.merge(index: index))
+        else
+          children = n[:children] ? n[:children] : []
+          rec_node(search_index - 1, children + tail, index)
+        end
+      end
     end
 
     #
-    # Allows iterating over Scene instances.
+    # Allows iterating over Node instances.
     #
     def each
       return to_enum unless block_given?
-      scenes.each_with_index do |s, i|
-        yield(scene(i))
+      nodes.each_with_index do |n, i|
+        yield(node(i))
       end
+    end
+
+    def scene_by_id(id)
+      @scenes_by_id ||= scenes.each_with_object({}){|s,h| h[s[:id]] = Scene.new(s) }
+      @scenes_by_id[id]
     end
 
   end # class Config

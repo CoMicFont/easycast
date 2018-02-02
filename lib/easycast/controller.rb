@@ -42,7 +42,7 @@ module Easycast
 
     ### Scenes configuration
 
-    set :scene_index, 0
+    set :node_index, 0
 
     def self.load_config
       set :config, Config.load(SCENES_FOLDER)
@@ -85,18 +85,18 @@ module Easycast
     end
 
     ##
-    ## Returns the index of the current scene, in plain text
+    ## Returns the index of the current node, in plain text
     ##
-    get '/scene' do
+    get '/node' do
       content_type 'text/plain'
-      settings.scene_index.to_s
+      settings.node_index.to_s
     end
 
     ##
-    ## Updates the current scene to the i-th
+    ## Updates the current node to the i-th
     ##
-    post '/scene/:i' do |i|
-      settings.scene_index = i.to_i
+    post '/node/:i' do |i|
+      settings.node_index = i.to_i
       serve_nothing
     end
 
@@ -110,7 +110,7 @@ module Easycast
         mustache(:error)
       else
         @config = settings.config
-        @scene_index = settings.scene_index
+        @node_index = settings.node_index
         mustache(view)
       end
     end

@@ -43,19 +43,19 @@ module Easycast
 
     end
 
-    describe 'GET /scene' do
+    describe 'GET /node' do
 
-      it 'returns the current scene' do
-        get '/scene'
+      it 'returns the current node' do
+        get '/node'
         expect(last_response.status).to eql(200)
       end
 
     end
 
-    describe "POST /scene/i" do
+    describe "POST /node/i" do
 
-      it 'lets specify the current scene' do
-        post '/scene/1'
+      it 'lets specify the current node' do
+        post '/node/1'
         expect(last_response.status).to eql(204)
       end
 
