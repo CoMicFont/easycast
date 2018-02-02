@@ -13,11 +13,20 @@ module Easycast
         assets: [AssetPath]
       }
       Scene = {
+        id: String
         name: String
         cast: [Cast]
       }
+      Node = {
+        name: String
+        children :? [Node]
+      } | {
+        scene: String
+        children :? [Node]
+      }
       {
         scenes: [Scene]
+        nodes: [Node]
       }
     FIO
 
