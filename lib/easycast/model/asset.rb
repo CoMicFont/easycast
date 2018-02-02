@@ -55,7 +55,7 @@ module Easycast
     class Mp4 < Asset
 
       def to_html
-        %Q{<video width="320" height="240" autoplay>
+        %Q{<video autoplay>
   <source src="/#{@path}" type="video/mp4">
 This browser does not support the video tag.
 </video>}
@@ -66,7 +66,7 @@ This browser does not support the video tag.
     class Webm < Asset
 
       def to_html
-        %Q{<video width="320" height="240" autoplay>
+        %Q{<video autoplay>
   <source src="/#{@path}" type="video/webm">
 This browser does not support the video tag.
 </video>}
@@ -77,7 +77,7 @@ This browser does not support the video tag.
     class Ogg < Asset
 
       def to_html
-        %Q{<video width="320" height="240" autoplay>
+        %Q{<video autoplay>
   <source src="/#{@path}" type="video/ogg">
 This browser does not support the video tag.
 </video>}
