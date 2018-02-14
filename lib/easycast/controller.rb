@@ -20,19 +20,11 @@ module Easycast
       send_file Path.dir/"webassets/fonts"/f
     end
 
-    ### Mustache configuration
-
-    register Mustache::Sinatra
-    set :mustache, {
-      :templates => Path.dir/("templates"),
-      :views => Path.dir/("views"),
-      :namespace => Easycast
-    }
-
     ### Reloader configuration
 
     register Sinatra::Reloader
     also_reload 'lib/easycast/views/*.rb'
+    also_reload 'lib/easycast/views/remote/*.rb'
     also_reload 'lib/easycast/model/*.rb'
     enable :reloader
 
@@ -42,13 +34,13 @@ module Easycast
 
     ### Scenes configuration
 
-    set :node_index, 0
-
     def self.load_config
       set :config, Config.load(SCENES_FOLDER)
+      set :walk, Walk.new(config)
       set :load_error, nil
     rescue => ex
       set :config, nil
+      set :walk, nil
       set :load_error, ex
     end
     load_config
@@ -60,19 +52,16 @@ module Easycast
     # to choose a display
     #
     get "/" do
-      @body_class = "home"
       content_type :html
-      serve :home
+      serve Views::Home.new(settings.config)
     end
 
     ##
     ## Returns the .html file of the n-th display
     ##
     get "/display/:i" do |i|
-      @display_index = i.to_i
-      @body_class = "display"
       content_type :html
-      serve :display
+      serve Views::Display.new(settings.config, i.to_i, settings.walk)
     end
 
     ##
@@ -80,38 +69,48 @@ module Easycast
     ##
     get '/remote' do
       content_type :html
-      @body_class = "remote"
-      serve :remote
+      serve Views::Remote.new(settings.config, settings.walk)
     end
 
     ##
-    ## Returns the index of the current node, in plain text
+    ## Returns the current state of the walk
     ##
-    get '/node' do
+    get '/walk/state' do
       content_type 'text/plain'
-      settings.node_index.to_s
+      settings.walk.state.to_s
     end
 
     ##
-    ## Updates the current node to the i-th
+    ## Updates the current walk state to the i-th node
     ##
-    post '/node/:i' do |i|
-      settings.node_index = i.to_i
+    post '/walk/state/:i' do |i|
+      settings.walk = settings.walk.jump(i.to_i)
+      serve_nothing
+    end
+
+    ##
+    ## Moves the current walk state to the next scene
+    ##
+    post '/walk/next' do
+      settings.walk = settings.walk.next
+      serve_nothing
+    end
+
+    ##
+    ## Moves the current walk state to the previous scene
+    ##
+    post '/walk/previous' do
+      settings.walk = settings.walk.previous
       serve_nothing
     end
 
   private
 
-    def serve(view, data = {})
-      settings.load_config
+    def serve(view)
       if has_error?
-        @body_class = "error"
-        @load_error = settings.load_error
-        mustache(:error)
+        Views::Error.new(settings.config, settings.load_error).render
       else
-        @config = settings.config
-        @node_index = settings.node_index
-        mustache(view)
+        Views::Layout.new(view).render
       end
     end
 
@@ -125,6 +124,7 @@ module Easycast
 
   end # class Controller
 end # module Easycast
+require_relative 'views/view'
 require_relative 'views/layout'
 require_relative 'views/home'
 require_relative 'views/display'

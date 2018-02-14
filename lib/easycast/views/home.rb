@@ -3,10 +3,23 @@ module Easycast
     #
     # Home view, providing the menu to choose a display to show
     #
-    class Home < Layout
+    class Home < View
 
-      def subtitle
-        "Home page"
+      def title
+        "Home page | Easycast"
+      end
+
+      def body_class
+        "home"
+      end
+
+      def displays
+        (0..1).map do |index|
+          {
+            index: index,
+            name: "Display #{index}"
+          }
+        end
       end
 
     end # class Home

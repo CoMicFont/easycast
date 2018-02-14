@@ -5,7 +5,6 @@ require 'sinatra'
 require 'sinatra/reloader'
 require 'sprockets'
 require 'mustache'
-require 'mustache/sinatra'
 require 'rack/nocache'
 module Easycast
 
@@ -25,11 +24,13 @@ module Easycast
 
   SCENES_FOLDER = ENV['EASYCAST_SCENES_FOLDER'] || Path.backfind(".[config.ru]")/("scenes")
 
+  Mustache.template_path = ROOT_FOLDER/("lib")
+
 end
 require_relative 'easycast/error'
 require_relative 'easycast/model/config'
-require_relative 'easycast/model/node'
 require_relative 'easycast/model/scene'
 require_relative 'easycast/model/cast'
 require_relative 'easycast/model/asset'
+require_relative 'easycast/model/walk'
 require_relative 'easycast/controller'

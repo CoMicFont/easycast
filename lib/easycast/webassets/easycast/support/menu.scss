@@ -20,7 +20,7 @@
   padding-top: 60px;
 }
 
-.menu ul.button-list {
+.menu > ul.button-list {
   padding: 15px;
 }
 
@@ -31,6 +31,10 @@
   text-decoration: none;
   font-size: 20px;
   transition: 0.3s;
+}
+.menu ul.button-list > li > ul {
+  margin-top: 10px;
+  padding-left: 20px;
 }
 
 .menu .close-menu-btn {

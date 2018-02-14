@@ -25,37 +25,55 @@ module Easycast
 
     end
 
-    describe "GET /display/:i" do
+    shared_examples_for "An end-user page" do
 
-      it 'serves the scene page without trouble' do
-        get '/display/0'
+      it 'it served without trouble' do
+        get subject
         expect(last_response.status).to eql(200)
       end
 
+      it 'it uses the layout' do
+        get subject
+        expect(last_response.body).to match(/<html/)
+      end
+
+    end
+
+    describe "GET /home" do
+      subject { "/" }
+      it_behaves_like 'An end-user page'
+    end
+
+    describe "GET /display/:i" do
+      subject { "/display/0" }
+      it_behaves_like 'An end-user page'
     end
 
     describe "GET /remote" do
-
-      it 'serves the scene page without trouble' do
-        get '/remote'
-        expect(last_response.status).to eql(200)
-      end
-
+      subject { "/remote" }
+      it_behaves_like 'An end-user page'
     end
 
-    describe 'GET /node' do
+    describe '/walk/...' do
 
-      it 'returns the current node' do
-        get '/node'
+      it 'GET returns the current node index' do
+        get '/walk/state'
         expect(last_response.status).to eql(200)
+        expect(last_response.body).to match(/^\d+$/)
       end
 
-    end
+      it 'POST lets specify the current node index' do
+        post '/walk/state/1'
+        expect(last_response.status).to eql(204)
+      end
 
-    describe "POST /node/i" do
+      it 'POST next moves to the next node' do
+        post '/walk/next'
+        expect(last_response.status).to eql(204)
+      end
 
-      it 'lets specify the current node' do
-        post '/node/1'
+      it 'POST previous moves to the previous node' do
+        post '/walk/previous'
         expect(last_response.status).to eql(204)
       end
 

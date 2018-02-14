@@ -8,7 +8,6 @@ gem 'rack-robustness', '~> 1.1'
 gem 'jwt', '~> 1.5'
 gem 'bmg', '~> 0.1'
 gem 'mustache', '~> 1.0', ">= 1.0.5"
-gem 'mustache-sinatra', '~> 1.0'
 gem 'sprockets', '~> 3.7'
 gem 'uglifier', '~> 3.1'
 gem 'sass', '~> 3.4'

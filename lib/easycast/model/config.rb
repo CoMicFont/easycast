@@ -12,23 +12,39 @@ module Easycast
         remote: Boolean
         assets: [AssetPath]
       }
+
+      Scene.Id = String
       Scene = {
-        id: String
+        id: Scene.Id
         name: String
         cast: [Cast]
       }
+
       Node = {
         name: String
         children :? [Node]
       } | {
-        scene: String
+        scene: Scene.Id
         children :? [Node]
       }
+
+      # Main, a set of scenes and a hierarchical structure
+      # presenting them
       {
         scenes: [Scene]
         nodes: [Node]
       }
     FIO
+
+    def initialize(data)
+      super(data)
+      generate_node_indices!(data[:nodes], 0)
+    end
+
+    # Dresses some data as a config object
+    def self.dress(data)
+      new SCHEMA.dress(data)
+    end
 
     #
     # Loads a Scenes instance from a given folder.
@@ -40,51 +56,24 @@ module Easycast
       raise ConfigError, "Scenes folder does not exist `#{folder}`" unless folder.directory?
       yml = folder/"scenes.yml"
       raise ConfigError, "Missing scenes index file `#{yml}`" unless yml.file?
-      yml_data = yml.load
-      new SCHEMA.dress(yml_data)
+      dress(yml.load)
     rescue Finitio::Error => ex
       raise ConfigError, "Corrupted scenes index file\n#{ex.root_cause.message}"
-    end
-
-    #
-    # Returns the index-th node as a Node object
-    # the nodes are indexed by a depth-search in the tree of nodes
-    # example:
-    #   t =     a          t[0] = a     t[5] = f
-    #          / \         t[1] = b
-    #         b   c        t[2] = d
-    #        /   / \       t[3] = c
-    #       d   e   f      t[4] = e
-    #
-    def node(index)
-      rec_node(index, nodes, index)
-    end
-
-    private def rec_node(search_index, remaining_nodes, index)
-      if remaining_nodes.empty? then raise ArgumentError, "Index out of nodes bounds: " + index.to_s
-      else
-        n, *tail = *remaining_nodes
-        if search_index == 0 then Node.new(n.merge(index: index))
-        else
-          children = n[:children] ? n[:children] : []
-          rec_node(search_index - 1, children + tail, index)
-        end
-      end
-    end
-
-    #
-    # Allows iterating over Node instances.
-    #
-    def each
-      return to_enum unless block_given?
-      nodes.each_with_index do |n, i|
-        yield(node(i))
-      end
     end
 
     def scene_by_id(id)
       @scenes_by_id ||= scenes.each_with_object({}){|s,h| h[s[:id]] = Scene.new(s) }
       @scenes_by_id[id]
+    end
+
+  private
+
+    def generate_node_indices!(remaining_nodes, i)
+      return if remaining_nodes.empty?
+      node, *tail = *remaining_nodes
+      node.merge!(index: i)
+      children = node[:children] ? node[:children] : []
+      generate_node_indices!(children + tail, i+1)
     end
 
   end # class Config
