@@ -7,17 +7,18 @@
 }
 
 .menu {
-  height: 100%;
-  width: 250px;
+  width: 350px;
   position: fixed;
   z-index: 1;
   top: 0;
-  left: -250px;
+  bottom: 0;
+  left: -350px;
   background-color: #222;
   overflow-x: hidden;
   transition: 0.5s;
   padding: 0;
   padding-top: 60px;
+  padding-bottom: 60px;
 }
 
 .menu > ul.button-list {
