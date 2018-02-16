@@ -22,11 +22,13 @@ module Easycast
 
     ### Reloader configuration
 
-    register Sinatra::Reloader
-    also_reload 'lib/easycast/views/*.rb'
-    also_reload 'lib/easycast/views/remote/*.rb'
-    also_reload 'lib/easycast/model/*.rb'
-    enable :reloader
+    if DEVELOPMENT_MODE
+      register Sinatra::Reloader
+      also_reload 'lib/easycast/views/*.rb'
+      also_reload 'lib/easycast/views/remote/*.rb'
+      also_reload 'lib/easycast/model/*.rb'
+      enable :reloader
+    end
 
     ### Cache configuration
 
@@ -39,6 +41,7 @@ module Easycast
       set :walk, Walk.new(config)
       set :load_error, nil
     rescue => ex
+      LOGGER.fatal(ex.message)
       set :config, nil
       set :walk, nil
       set :load_error, ex
@@ -107,6 +110,10 @@ module Easycast
   private
 
     def serve(view)
+      if DEVELOPMENT_MODE
+        settings.config = Config.load(SCENES_FOLDER)
+        settings.walk = Walk.new(settings.config, nil, settings.walk.state)
+      end
       if has_error?
         Views::Error.new(settings.config, settings.load_error).render
       else
