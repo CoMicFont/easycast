@@ -14,17 +14,20 @@ module Easycast
   # Root folder of the project structure
   ROOT_FOLDER = Path.backfind('.[Gemfile]') or raise("Missing Gemfile")
 
-  # Public folder
-  PUBLIC_FOLDER = ROOT_FOLDER/('public')
-
-  # Public assets folder
-  PUBLIC_ASSETS_FOLDER = PUBLIC_FOLDER/('assets')
-
+  # Logger used everywhere for debugging and info
   LOGGER = Logger.new(STDOUT)
 
+  # Main scenes folder
   SCENES_FOLDER = ENV['EASYCAST_SCENES_FOLDER'] || Path.backfind(".[config.ru]")/("scenes")
 
+  # Public assets folder
+  WEBASSETS_FOLDER = SCENES_FOLDER/('assets/webassets')
+
+  # Let mustache know where its templates are
   Mustache.template_path = ROOT_FOLDER/("lib")
+
+  # Whether the web assets use the compiled & versionned
+  VERSIONNED_ASSETS = not(ENV['EASYCAST_VERSIONNED_ASSETS'].nil?)
 
 end
 require_relative 'easycast/error'

@@ -41,7 +41,19 @@ module Easycast
 
     describe "GET /home" do
       subject { "/" }
+
       it_behaves_like 'An end-user page'
+
+      it 'does not version the assets by default' do
+        get subject
+        expect(last_response.body).to match("easycast.css")
+      end
+
+      it 'does version the assets if the environment says so' do
+        Easycast::VERSIONNED_ASSETS = true
+        get subject
+        expect(last_response.body).to match("easycast-#{Easycast::VERSION}.min.css")
+      end
     end
 
     describe "GET /display/:i" do
