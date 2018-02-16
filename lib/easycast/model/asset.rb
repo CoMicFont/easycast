@@ -11,12 +11,13 @@ module Easycast
 
     def self.for(path)
       case path
-      when /.html$/ then Asset::Html.new(path)
-      when /.svg$/  then Asset::Svg.new(path)
-      when /.png$/  then Asset::Png.new(path)
-      when /.mp4$/  then Asset::Mp4.new(path)
-      when /.webm$/ then Asset::Webm.new(path)
-      when /.ogg$/  then Asset::Ogg.new(path)
+      when /.html$/  then Asset::Html.new(path)
+      when /.svg$/   then Asset::Svg.new(path)
+      when /.png$/   then Asset::Png.new(path)
+      when /.jpe?g$/ then Asset::Jpg.new(path)
+      when /.mp4$/   then Asset::Mp4.new(path)
+      when /.webm$/  then Asset::Webm.new(path)
+      when /.ogg$/   then Asset::Ogg.new(path)
       end
     end
 
@@ -51,6 +52,14 @@ module Easycast
       end
 
     end # class Png
+
+    class Jpg < Asset
+
+      def to_html
+        %Q{<img src="/#{@path}">}
+      end
+
+    end # class Jpg
 
     class Mp4 < Asset
 
