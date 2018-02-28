@@ -19,7 +19,7 @@ module Easycast
         end
 
         def css_class
-          index == walk.state ? "active" : ""
+          index == walk.state ? "node-#{index} active" : "node-#{index}"
         end
 
         def subtree

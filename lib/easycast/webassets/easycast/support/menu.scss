@@ -6,6 +6,18 @@
   left: 10px;
 }
 
+.close-menu-btn {
+  display: none;
+  position: fixed;
+  top: 5px;
+  left: 10px;
+  font-size: 36px !important;
+  color: #ccc;
+  &:hover {
+    color: white;
+  }
+}
+
 .menu {
   width: 350px;
   position: fixed;
@@ -17,35 +29,24 @@
   overflow-x: hidden;
   transition: 0.5s;
   padding: 0;
-  padding-top: 60px;
   padding-bottom: 60px;
-}
-
-.menu > ul.button-list {
-  padding: 15px;
-}
-
-.menu a,
-.menu ul.button-list > li > a,
-.menu ul.button-list > li.menu a,
-.menu ul.button-list > li.menu a:visited {
-  text-decoration: none;
-  font-size: 20px;
-  transition: 0.3s;
-}
-.menu ul.button-list > li > ul {
-  margin-top: 10px;
-  padding-left: 20px;
-}
-
-.menu .close-menu-btn {
-  position: absolute;
-  top: 5px;
-  right: 15px;
-  font-size: 36px;
-  margin-left: 50px;
-  color: #ccc;
-  &:hover {
-    color: white;
+  > ul.button-list {
+    padding: 15px;
+    padding-left: 45px;
+  }
+  a,
+  ul.button-list > li > a,
+  ul.button-list > li.menu a,
+  ul.button-list > li.menu a:visited {
+    text-decoration: none;
+    font-size: 20px;
+    transition: 0.3s;
+  }
+  ul.button-list > li > ul {
+    margin-top: 10px;
+    padding-left: 20px;
+  }
+  &.open .close-menu-btn {
+    display: block;
   }
 }
