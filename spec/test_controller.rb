@@ -7,24 +7,6 @@ module Easycast
       Easycast::Controller
     end
 
-    describe "GET /webassets/..." do
-
-      it 'serves the webassets without trouble' do
-        get '/webassets/easycast.css'
-        expect(last_response.status).to eql(200)
-        get '/webassets/easycast.js'
-        expect(last_response.status).to eql(200)
-      end
-
-      it 'serves the vendor webassets without trouble' do
-        get '/webassets/vendor.css'
-        expect(last_response.status).to eql(200)
-        get '/webassets/vendor.js'
-        expect(last_response.status).to eql(200)
-      end
-
-    end
-
     shared_examples_for "An end-user page" do
 
       it 'it served without trouble' do
@@ -47,12 +29,6 @@ module Easycast
       it 'does not version the assets by default' do
         get subject
         expect(last_response.body).to match("easycast.css")
-      end
-
-      it 'does version the assets if the environment says so' do
-        Easycast::VERSIONNED_ASSETS = true
-        get subject
-        expect(last_response.body).to match("easycast-#{Easycast::VERSION}.min.css")
       end
     end
 

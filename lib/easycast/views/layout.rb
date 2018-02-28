@@ -11,10 +11,6 @@ module Easycast
       end
       attr_reader :page
 
-      def version
-        Easycast::VERSIONNED_ASSETS ? "-#{Easycast::VERSION}.min" : ""
-      end
-
       def title
         page.title
       end

@@ -26,9 +26,6 @@ module Easycast
   # Let mustache know where its templates are
   Mustache.template_path = ROOT_FOLDER/("lib")
 
-  # Whether the web assets use the compiled & versionned
-  VERSIONNED_ASSETS = not(ENV['EASYCAST_VERSIONNED_ASSETS'].nil?)
-
   # Whether we want sinatra to reload everytime
   DEVELOPMENT_MODE = not(ENV['EASYCAST_DEVELOPMENT_MODE'].nil?)
 
@@ -40,3 +37,5 @@ require_relative 'easycast/model/cast'
 require_relative 'easycast/model/asset'
 require_relative 'easycast/model/walk'
 require_relative 'easycast/controller'
+require_relative 'easycast/assets'
+require_relative 'easycast/service'

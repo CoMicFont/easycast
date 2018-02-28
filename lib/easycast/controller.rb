@@ -3,23 +3,6 @@ module Easycast
     set :raise_errors, true
     set :show_exceptions, false
 
-    ### Assets handling
-
-    set :public_folder, SCENES_FOLDER/("assets")
-
-    Assets = Sprockets::Environment.new
-    Assets.append_path Path.dir/('webassets')
-    Assets.css_compressor = :scss
-
-    get "/webassets/*" do
-      env["PATH_INFO"].sub!("/webassets", "")
-      Assets.call(env)
-    end
-
-    get "/fonts/:font" do |f|
-      send_file Path.dir/"webassets/fonts"/f
-    end
-
     ### Reloader configuration
 
     if DEVELOPMENT_MODE
@@ -29,10 +12,6 @@ module Easycast
       also_reload 'lib/easycast/model/*.rb'
       enable :reloader
     end
-
-    ### Cache configuration
-
-    use Rack::Nocache
 
     ### Scenes configuration
 

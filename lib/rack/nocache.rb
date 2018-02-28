@@ -8,6 +8,16 @@ module Rack
   #
   class Nocache
 
+    CACHE_BUSTER = {
+      "Cache-Control" => "no-cache, no-store, max-age=0, must-revalidate",
+      "Pragma" => "no-cache",
+      "Expires" => "Fri, 29 Aug 1997 02:14:00 EST"
+    }
+
+    ALLOW_CACHE = {
+      "Cache-Control" => "public, max-age=3600, must-revalidate"
+    }
+
     def initialize(app)
       @app = app
     end
@@ -19,18 +29,8 @@ module Rack
 
   protected
 
-    CACHE_BUSTER = {
-      "Cache-Control" => "no-cache, no-store, max-age=0, must-revalidate",
-      "Pragma" => "no-cache",
-      "Expires" => "Fri, 29 Aug 1997 02:14:00 EST"
-    }
-
-    ALLOW_CACHE = {
-      "Cache-Control" => "public, max-age=0, must-revalidate"
-    }
-
     def patch_response_headers(hs)
-      hs.merge(hs['ETag'] || hs['Last-Modified'] ? CACHE_BUSTER : CACHE_BUSTER)
+      hs.merge(hs['ETag'] || hs['Last-Modified'] ? ALLOW_CACHE : CACHE_BUSTER)
     end
 
   end # class Nocache
