@@ -1,0 +1,59 @@
+---
+
+# The scenes allows you to define various screen configurations,
+# casting assets on the various available displays.
+scenes:
+
+- id: welcome
+  name: Welcome to Easycast!
+  cast:
+  - display: 0
+    remote: true
+    assets:
+    - welcome/home.html
+- id: welcome/what
+  name: What is Easycast?
+  cast:
+  - display: 0
+    remote: true
+    assets:
+    - welcome/what.html
+- id: welcome/contact
+  name: Contact us
+  cast:
+  - display: 0
+    remote: true
+    assets:
+    - welcome/contact.html
+
+##
+
+- id: concepts
+  name: Main concepts
+  cast:
+  - display: 0
+    remote: true
+    assets:
+    - concepts/home.html
+
+# Nodes provides the hierarchical organisation of the available
+# scenes. This is the tree that displays in the menu and remote.
+nodes:
+- scene: welcome
+  children:
+  - scene: welcome/what
+  - scene: welcome/contact
+- scene: concepts
+
+# This configuration variable handles the automatic walk
+# of the various scenes, also called the "animation".
+#
+# When autoplay is set to true, the animation automatically
+# starts with Easycast (hence, the Raspberry), and immediately
+# moves from scene to scene with the frequency indicated.
+#
+# When autoplay is false, the user must start the animation
+# manually using the remote.
+animation:
+  frequency: 10s
+  autoplay: false

@@ -19,7 +19,13 @@ module Easycast
   LOGGER = Logger.new(STDOUT)
 
   # Main scenes folder
-  SCENES_FOLDER = ENV['EASYCAST_SCENES_FOLDER'] || Path.backfind(".[config.ru]")/("scenes")
+  SCENES_FOLDER = if folder = ENV['EASYCAST_SCENES_FOLDER']
+    folder
+  elsif (folder = ROOT_FOLDER/("scenes")).directory?
+    folder
+  else
+    ROOT_FOLDER/("documentation")
+  end
 
   # Public assets folder
   WEBASSETS_FOLDER = SCENES_FOLDER/('assets/webassets')
