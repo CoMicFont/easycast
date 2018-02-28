@@ -5,12 +5,6 @@ module Easycast
     #
     class Remote < View
 
-      def initialize(config, walk)
-        super(config)
-        @walk = walk
-      end
-      attr_reader :walk
-
       def title
         "Remote | Easycast"
       end
@@ -20,7 +14,7 @@ module Easycast
       end
 
       def tree
-        Remote::Floor.new(config, config.nodes, walk).render
+        Remote::Floor.new(config, state, config.nodes).render
       end
 
       def previous_href
@@ -29,6 +23,14 @@ module Easycast
 
       def next_href
         "/walk/next"
+      end
+
+      def scheduler_toggle_href
+        "/scheduler/toggle"
+      end
+
+      def scheduler_icon
+        state.scheduler.paused? ? "play" : "pause"
       end
 
     end

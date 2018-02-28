@@ -5,10 +5,26 @@ module Easycast
     #
     class View < Mustache
 
-      def initialize(config)
+      def initialize(config, state)
         @config = config
+        @state = state
       end
-      attr_reader :config
+      attr_reader :config, :state
+
+      def walk
+        state.walk
+      end
+
+      def scheduler
+        state.scheduler
+      end
+
+      def state_json
+        {
+          walkIndex: state.walk.state,
+          paused: state.scheduler.paused?
+        }.to_json
+      end
 
     end
   end

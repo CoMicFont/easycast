@@ -3,7 +3,7 @@ module Easycast
     set :raise_errors, true
     set :show_exceptions, false
 
-    ### Reloader configuration
+  ### Reloader configuration
 
     if DEVELOPMENT_MODE
       register Sinatra::Reloader
@@ -13,21 +13,23 @@ module Easycast
       enable :reloader
     end
 
-    ### Scenes configuration
+  ### Scenes configuration
 
     def self.load_config
       set :config, Config.load(SCENES_FOLDER)
       set :walk, Walk.new(config)
       set :load_error, nil
+      set :scheduler, Rufus::Scheduler.new
     rescue => ex
       LOGGER.fatal(ex.message)
       set :config, nil
       set :walk, nil
       set :load_error, ex
+      set :scheduler, nil
     end
     load_config
 
-    ### Routes
+  ### Display and remote control
 
     #
     # Returns the .html file of the root page, allowing
@@ -35,7 +37,7 @@ module Easycast
     #
     get "/" do
       content_type :html
-      serve Views::Home.new(settings.config)
+      serve Views::Home.new(settings.config, get_state)
     end
 
     ##
@@ -43,7 +45,7 @@ module Easycast
     ##
     get "/display/:i" do |i|
       content_type :html
-      serve Views::Display.new(settings.config, i.to_i, settings.walk)
+      serve Views::Display.new(settings.config, get_state, i.to_i)
     end
 
     ##
@@ -51,16 +53,10 @@ module Easycast
     ##
     get '/remote' do
       content_type :html
-      serve Views::Remote.new(settings.config, settings.walk)
+      serve Views::Remote.new(settings.config, get_state)
     end
 
-    ##
-    ## Returns the current state of the walk
-    ##
-    get '/walk/state' do
-      content_type 'text/plain'
-      settings.walk.state.to_s
-    end
+  ### Walk
 
     ##
     ## Updates the current walk state to the i-th node
@@ -84,6 +80,61 @@ module Easycast
     post '/walk/previous' do
       settings.walk = settings.walk.previous
       serve_nothing
+    end
+
+  ### Scheduler
+
+    def scheduler
+      settings.scheduler
+    end
+
+    scheduler.every(settings.config.animation[:frequency]) do
+      settings.walk = settings.walk.next
+    end
+
+    scheduler.pause unless settings.config.animation[:autoplay]
+
+    post '/scheduler/pause' do
+      scheduler.pause unless scheduler.paused?
+      204
+    end
+
+    post '/scheduler/resume' do
+      scheduler.resume if scheduler.paused?
+      204
+    end
+
+    post '/scheduler/toggle' do
+      if scheduler.paused?
+        scheduler.resume
+        201
+      else
+        scheduler.pause
+        204
+      end
+    end
+
+  ### Controller state
+
+    def get_state
+      OpenStruct.new({
+        config: settings.config,
+        walk: settings.walk,
+        scheduler: settings.scheduler
+      })
+    end
+
+    ##
+    ## Returns the current state of the controller, i.e.
+    ## current node and scheduler state.
+    ##
+    get '/state' do
+      content_type :json
+      state = get_state
+      {
+        walkIndex: state.walk.state,
+        paused: state.scheduler.paused?
+      }.to_json
     end
 
   private

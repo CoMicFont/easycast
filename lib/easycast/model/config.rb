@@ -31,12 +31,17 @@ module Easycast
       # Main, a set of scenes and a hierarchical structure
       # presenting them
       {
-        scenes: [Scene]
-        nodes: [Node]
+        scenes    :  [Scene]
+        nodes     :  [Node]
+        animation :? {
+          frequency : String
+          autoplay  : Boolean
+        }
       }
     FIO
 
     def initialize(data)
+      ensure_animation!(data)
       super(data)
       generate_node_indices!(data[:nodes], 0)
     end
@@ -67,6 +72,12 @@ module Easycast
     end
 
   private
+
+    def ensure_animation!(data)
+      data[:animation] ||= {}
+      data[:animation][:frequency] ||= '45s'
+      data[:animation][:autoplay] = true unless data[:animation].has_key?(:autoplay)
+    end
 
     def generate_node_indices!(remaining_nodes, i)
       return if remaining_nodes.empty?

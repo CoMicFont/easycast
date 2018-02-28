@@ -6,6 +6,7 @@ require 'sinatra/reloader'
 require 'sprockets'
 require 'mustache'
 require 'rack/nocache'
+require 'rufus/scheduler'
 module Easycast
 
   # Version of Easycast software

@@ -3,9 +3,9 @@ module Easycast
     class Remote
       class Floor < View
 
-        def initialize(config, nodes, walk)
-          super(config)
-          @nodes = nodes.map{|n| Node.new(config, n, walk) }
+        def initialize(config, state, nodes)
+          super(config, state)
+          @nodes = nodes.map{|n| Node.new(config, state, n) }
         end
         attr_reader :nodes
 

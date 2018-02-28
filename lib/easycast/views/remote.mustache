@@ -5,10 +5,13 @@
     <a href="{{previous_href}}"><i class="fa fa-backward" aria-hidden="true"></i></a>
   </li>
   <li>
+    <a href="{{scheduler_toggle_href}}"><i id="scheduler_icon" class="fa fa-{{scheduler_icon}}" aria-hidden="true"></i></a>
+  </li>
+  <li>
     <a href="{{next_href}}"><i class="fa fa-forward" aria-hidden="true"></i></a>
   </li>
 </ul>
 
 <script>
-refresh({{walk.state}}, refreshRemote)
+refresh({{{state_json}}}, refreshRemote)
 </script>

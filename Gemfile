@@ -11,6 +11,7 @@ gem 'mustache', '~> 1.0', ">= 1.0.5"
 gem 'sprockets', '~> 3.7'
 gem 'uglifier', '~> 3.1'
 gem 'sass', '~> 3.4'
+gem "rufus-scheduler", "~> 3.4"
 
 group :test do
   gem 'rake', '~> 12.0'

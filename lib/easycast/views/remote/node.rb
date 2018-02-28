@@ -3,12 +3,11 @@ module Easycast
     class Remote
       class Node < View
 
-        def initialize(config, node, walk)
-          super(config)
+        def initialize(config, state, node)
+          super(config, state)
           @node = node
-          @walk = walk
         end
-        attr_reader :config, :node, :walk
+        attr_reader :config, :node
 
         def name
           node[:scene] ? config.scene_by_id(node[:scene]).name : node[:name]
@@ -23,7 +22,7 @@ module Easycast
         end
 
         def subtree
-          Floor.new(config, node[:children], walk).render if node[:children]
+          Floor.new(config, state, node[:children]).render if node[:children]
         end
 
       end

@@ -2,8 +2,8 @@ require 'spec_helper'
 module Easycast
   describe Config do
 
-    let(:config) {
-      Config.dress({
+    let(:config_data) {
+      {
         scenes: [
           {
             id: "intro1",
@@ -31,7 +31,7 @@ module Easycast
             name: "Introduction",
             children: [
               {
-                scene: "intro1"    
+                scene: "intro1"
               },
               {
                 scene: "intro2"
@@ -47,7 +47,11 @@ module Easycast
             ]
           },
         ]
-      })
+      }
+    }
+
+    let(:config) {
+      Config.dress(config_data)
     }
 
     describe "new" do
@@ -62,6 +66,23 @@ module Easycast
         config.nodes.each do |n|
           check.call(n)
         end
+      end
+
+      it 'provides a default animation frequency if missing' do
+        expect(config.animation).to eql({
+          frequency: "45s",
+          autoplay: true
+        })
+      end
+
+      it 'uses the animation frequency, if any' do
+        config = Config.dress(config_data.merge({
+          "animation" => {
+            "frequency" => "60s",
+            "autoplay" => false
+          }
+        }))
+        expect(config.animation).to eql({frequency: "60s", autoplay: false})
       end
 
     end

@@ -5,12 +5,11 @@ module Easycast
     #
     class Display < View
 
-      def initialize(config, display_index, walk)
-        super(config)
+      def initialize(config, state, display_index)
+        super(config, state)
         @display_index = display_index
-        @walk = walk
       end
-      attr_reader :display_index, :walk
+      attr_reader :display_index
 
       def title
         "Display #{display_index} | Easycast"
@@ -25,7 +24,7 @@ module Easycast
       end
 
       def remote
-        Remote::Floor.new(config, config.nodes, walk).render
+        Remote::Floor.new(config, state, config.nodes).render
       end
 
       def display_cast
