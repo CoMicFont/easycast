@@ -1,0 +1,60 @@
+#!/usr/bin/env ruby
+require 'bundler/setup'
+require 'path'
+require 'optparse'
+
+CONFIG_FOLDER = Path.dir.parent/('config')
+
+options = {
+  dry_run: true,
+  target: Path('/')
+}
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: configure [options] CONFIG..."
+
+  opts.on("--[no-]dry-run", "Do not do anything real") do |v|
+    options[:dry_run] = v
+  end
+
+  opts.on("--target=FOLDER", "Target folder to configure (defaults to '/')") do |target|
+    path = Path(target)
+    if path.directory?
+      options[:target] = path
+    else
+      puts "No such folder `#{path}`"
+      exit(-1)
+    end
+  end
+end.parse!
+
+if missing = ARGV.find{|c| !(CONFIG_FOLDER/c).directory? }
+  puts "Unknown configuration `#{missing}`, config/#{missing} is not a folder"
+  exit(-1)
+end
+
+def mkdir(config_folder, dir, options)
+  folder = options[:target]/dir
+  unless folder.exists?
+    puts "mkdir #{folder}"
+    folder.mkdir_p unless options[:dry_run]
+  end
+end
+
+def copy(config_folder, file, options)
+  dir = file.parent
+  mkdir(config_folder, dir, options)
+  puts "cp #{config_folder/file} #{options[:target]/file}"
+  (config_folder/file).cp(options[:target]/file) unless options[:dry_run]
+end
+
+ARGV.each do |config|
+  root = CONFIG_FOLDER/config
+  root.glob("**/*", File::FNM_DOTMATCH) do |file|
+    if file.directory?
+      mkdir(root, file.relative_to(root), options)
+    else
+      copy(root, file.relative_to(root), options)
+    end
+  end
+end

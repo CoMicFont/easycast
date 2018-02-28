@@ -1,4 +1,4 @@
 #!/bin/sh
 git remote update
-git pull origin master
+git reset --hard origin/master
 bundle install
