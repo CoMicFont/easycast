@@ -31,10 +31,11 @@ module Easycast
             name: "Introduction",
             children: [
               {
-                scene: "intro1"    
+                scene: "intro1"
               },
               {
-                scene: "intro2"
+                scene: "intro2",
+                repeat: 2
               }
             ]
           },
@@ -62,7 +63,7 @@ module Easycast
 
     end
 
-    describe "next" do
+    describe "manual next" do
 
       it 'returns another walk' do
         expect(walk.next).to be_a(Walk)
@@ -87,6 +88,31 @@ module Easycast
 
       it 'loops back to the first scene' do
         expect(walk.next.next.next.next.current_scene.name).to eql("Intro 1")
+      end
+
+    end
+
+    describe "auto next" do
+
+      it 'returns another walk' do
+        expect(walk.next(true)).to be_a(Walk)
+      end
+
+      it 'does not touch the original one' do
+        successor = walk.next(true)
+        expect(walk.current_scene.name).to eql("Intro 1")
+      end
+
+      it 'sets the new walk on the next scene when no repeat is specified' do
+        expect(walk.next(true).current_scene.name).to eql("Intro 2")
+      end
+
+      it 'sets the new walk on the current scene when a repeat is specified' do
+        expect(walk.next(true).next(true).current_scene.name).to eql("Intro 2")
+      end
+
+      it 'sets the new walk on the next scene when the repeat is exhausted' do
+        expect(walk.next(true).next(true).next(true).current_scene.name).to eql("Chapter 1")
       end
 
     end
@@ -118,6 +144,22 @@ module Easycast
         expect(walk.previous.previous.previous.previous.current_scene.name).to eql("Intro 1")
       end
 
+      it 'initializes correctly the repeat number of a target scene that must not be repeated' do
+        expect(walk.previous.next(true).current_scene.name).to eql("Intro 1")
+      end
+
+      it 'initializes correctly the repeat number of a target scene that must be repeated' do
+        scene_with_repeat = walk.previous.previous.previous
+        expect(scene_with_repeat.next(true).current_scene.name).to eql("Intro 2")
+        expect(scene_with_repeat.next(true).next(true).current_scene.name).to eql("Chapter 1")
+      end
+
+      it 'initializes correctly the repeat number of a target scene that must not be repeated even if it went through a repeat scene' do
+        scene_with_repeat = walk.previous.previous.previous
+        expect(scene_with_repeat.previous.current_scene.name).to eql("Intro 1")
+        expect(scene_with_repeat.previous.next(true).current_scene.name).to eql("Intro 2")
+      end
+
     end
 
     describe "jump" do
@@ -142,6 +184,22 @@ module Easycast
 
       it 'Applies % n, and is thus robust' do
         expect(walk.jump(10).current_scene.name).to eql("Intro 1")
+      end
+
+      it 'initializes correctly the repeat number of a target scene that must not be repeated' do
+        expect(walk.jump(1).next(true).current_scene.name).to eql("Intro 2")
+      end
+
+      it 'initializes correctly the repeat number of a target scene that must be repeated' do
+        scene_with_repeat = walk.jump(2)
+        expect(scene_with_repeat.next(true).current_scene.name).to eql("Intro 2")
+        expect(scene_with_repeat.next(true).next(true).current_scene.name).to eql("Chapter 1")
+      end
+
+      it 'initializes correctly the repeat number of a target scene that must not be repeated even if it went through a repeat scene' do
+        scene_with_repeat = walk.jump(2)
+        expect(scene_with_repeat.jump(3).current_scene.name).to eql("Chapter 1")
+        expect(scene_with_repeat.jump(3).next(true).current_scene.name).to eql("Chapter 1, Section 1")
       end
 
     end

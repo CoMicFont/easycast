@@ -6,6 +6,7 @@ module Easycast
   class Config < OpenStruct
 
     SCHEMA = Finitio::DEFAULT_SYSTEM.parse <<-FIO
+      Several = Integer(i | i > 1)
       AssetPath = String( s | s.size>0 )
       Cast = {
         display: Integer
@@ -25,6 +26,7 @@ module Easycast
         children :? [Node]
       } | {
         scene: Scene.Id
+        repeat :? Several
         children :? [Node]
       }
 
