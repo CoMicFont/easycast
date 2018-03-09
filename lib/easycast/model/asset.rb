@@ -1,12 +1,21 @@
+require 'securerandom'
 module Easycast
   #
   # An Asset is some media that can be shown on a display, such
   # as an html file, an image, a video, etc.
+  # or an image timed gallery (slideshow)
   #
   class Asset
 
-    def initialize(path)
-      @path = path
+    def initialize(arg)
+      if arg.is_a?(Hash)
+        # this is a gallery asset
+        @options = arg[:options] || { interval: 2 }
+        @assets  = arg[:images].map { |i| Asset.for(i) }
+      else
+        # this is a path asset
+        @path = arg
+      end
     end
 
     def self.for(path)
@@ -18,6 +27,7 @@ module Easycast
       when /.mp4$/   then Asset::Mp4.new(path)
       when /.webm$/  then Asset::Webm.new(path)
       when /.ogg$/   then Asset::Ogg.new(path)
+      else                Asset::Gallery.new(path)
       end
     end
 
@@ -93,6 +103,24 @@ This browser does not support the video tag.
       end
 
     end # class Ogg
+
+    class Gallery < Asset
+      def initialize(arg)
+        @id = SecureRandom.uuid
+        super(arg)
+      end
+  
+      def to_html
+        interval = @options[:interval] * 1000
+        <<-HTML
+<div id="#{@id}" class="gallery">
+  #{@assets.map { |a| a.to_html }.join("\n  ")}
+  <script>installGallery("#{@id}", #{interval});</script>
+</div>
+HTML
+      end
+
+    end # class Gallery
 
   end # class Asset
 end # module Easycast
