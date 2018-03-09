@@ -88,7 +88,7 @@ module Easycast
       settings.scheduler
     end
 
-    scheduler.every(settings.config.animation[:frequency]) do
+    scheduler.interval(settings.config.animation[:frequency]) do
       settings.walk = settings.walk.next
     end
 
