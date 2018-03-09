@@ -89,7 +89,7 @@ module Easycast
     end
 
     scheduler.interval(settings.config.animation[:frequency]) do
-      settings.walk = settings.walk.next
+      settings.walk = settings.walk.next(true)
     end
 
     scheduler.pause unless settings.config.animation[:autoplay]

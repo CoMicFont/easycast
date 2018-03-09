@@ -1,10 +1,11 @@
 module Easycast
   class Walk
 
-    def initialize(config, linearization = nil, state = nil)
+    def initialize(config, linearization = nil, state = nil, repeat = 1)
       @config = config
       @linearization = linearization || linearize_nodes([], config.nodes, 0)
       @state = state || find_next(-1)
+      @repeat = repeat || 1
 
       # Class invariant, the current state is the index of the current node
       raise "illegal state" unless @linearization[@state][:index] == @state
@@ -15,16 +16,26 @@ module Easycast
       config.scene_by_id(linearization[state][:scene])
     end
 
-    def next
-      Walk.new(config, linearization, find_next(state))
+    def next(auto = false)
+      if (auto == true && @repeat > 1) then
+        Walk.new(config, linearization, state, @repeat - 1)
+      else
+        next_state = find_next(state)
+        repeat = linearization[next_state][:repeat]
+        Walk.new(config, linearization, next_state, repeat)
+      end
     end
 
     def previous
-      Walk.new(config, linearization, find_previous(state))
+      prev_state = find_previous(state)
+      repeat = linearization[prev_state][:repeat]
+      Walk.new(config, linearization, prev_state, repeat)
     end
 
     def jump(nth)
-      Walk.new(config, linearization, find_next((nth-1) % linearization.size))
+      target_state = find_next((nth-1) % linearization.size)
+      repeat = linearization[target_state][:repeat]
+      Walk.new(config, linearization, target_state, repeat)
     end
 
   private
@@ -57,4 +68,4 @@ module Easycast
     end
 
   end # class Walk
-end # module Easycase
+end # module Easycast
