@@ -36,6 +36,24 @@ scenes:
     assets:
     - concepts/home.html
 
+
+##
+
+- id: slideshow
+  name: Slideshow Demonstration
+  cast:
+  - display: 0
+    remote: true
+    assets:
+    - type: gallery
+      options:
+        interval: 1
+      images:
+      - slideshow/01.jpg
+      - slideshow/02.jpg
+      - slideshow/03.jpg
+      - slideshow/04.jpg
+
 # Nodes provides the hierarchical organisation of the available
 # scenes. This is the tree that displays in the menu and remote.
 nodes:
@@ -47,6 +65,8 @@ nodes:
   - scene: welcome/contact
     repeat: 4
 - scene: concepts
+  repeat: 10
+- scene: slideshow
   repeat: 10
 
 # This configuration variable handles the automatic walk
