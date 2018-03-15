@@ -6,7 +6,7 @@ module Easycast
   class Config < OpenStruct
 
     SCHEMA = Finitio::DEFAULT_SYSTEM.parse <<-FIO
-      Several = Integer(i | i > 1)
+      Several = Integer(i | i >= 0 )
       AssetPath = String( s | s.size>0 )
       AssetOptions = {
         interval :? Integer
