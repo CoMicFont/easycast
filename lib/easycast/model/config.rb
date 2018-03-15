@@ -8,10 +8,21 @@ module Easycast
     SCHEMA = Finitio::DEFAULT_SYSTEM.parse <<-FIO
       Several = Integer(i | i > 1)
       AssetPath = String( s | s.size>0 )
+      AssetOptions = {
+        interval :? Integer
+        ...
+      }
+
+      Gallery = {
+        type    : String( s | s == "gallery" )
+        options :? AssetOptions
+        images  :  [AssetPath]
+      }
+
       Cast = {
         display: Integer
         remote: Boolean
-        assets: [AssetPath]
+        assets: [AssetPath|Gallery]
       }
 
       Scene.Id = String
