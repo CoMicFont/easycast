@@ -15,7 +15,7 @@ module Rack
     }
 
     ALLOW_CACHE = {
-      "Cache-Control" => "public, max-age=3600, must-revalidate"
+      "Cache-Control" => "public, max-age=31536000, must-revalidate"
     }
 
     def initialize(app)
@@ -24,13 +24,13 @@ module Rack
 
     def call(env)
       status, headers, body = @app.call(env)
-      [status, patch_response_headers(headers), body]
+      [status, patch_response_headers(status, headers), body]
     end
 
   protected
 
-    def patch_response_headers(hs)
-      hs.merge(hs['ETag'] || hs['Last-Modified'] ? ALLOW_CACHE : CACHE_BUSTER)
+    def patch_response_headers(status, hs)
+      hs.merge(status == 304 || hs['ETag'] || hs['Last-Modified'] ? ALLOW_CACHE : CACHE_BUSTER)
     end
 
   end # class Nocache
