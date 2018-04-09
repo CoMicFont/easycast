@@ -23,6 +23,10 @@ module Easycast
         page.body_class
       end
 
+      def version
+        DEVELOPMENT_MODE ? "" : "-#{VERSION}.min"
+      end
+
       def yield
         page.render
       end
