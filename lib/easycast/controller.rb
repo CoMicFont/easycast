@@ -61,7 +61,7 @@ module Easycast
     ##
     post '/refresh' do
       [ 'easycast', 'raspberrypi' ].map{|ip|
-        `ssh pi@#{ip} /home/pi/easycast/bin/refresh-display`
+        `ssh -i /home/pi/.ssh/id_rsa -o StrictHostKeyChecking=no pi@#{ip} /home/pi/easycast/bin/refresh-display`
       }.join("\n")
     end
 
