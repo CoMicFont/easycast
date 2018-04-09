@@ -56,6 +56,15 @@ module Easycast
       serve Views::Remote.new(settings.config, get_state)
     end
 
+    ##
+    ## Force all displays to refresh
+    ##
+    post '/refresh' do
+      [ 'easycast', 'raspberrypi' ].map{|ip|
+        `ssh pi@#{ip} /home/pi/easycast/bin/refresh-display`
+      }.join("\n")
+    end
+
   ### Walk
 
     ##

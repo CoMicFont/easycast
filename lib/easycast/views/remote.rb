@@ -33,6 +33,10 @@ module Easycast
         state.scheduler.paused? ? "play" : "pause"
       end
 
+      def refresh_href
+        "/refresh"
+      end
+
     end
   end
 end

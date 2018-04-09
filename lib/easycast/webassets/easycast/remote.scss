@@ -25,5 +25,9 @@ body.remote {
       text-align: center;
       margin: 0 15px;
     }
+    > li.right {
+      position: absolute;
+      right: 10px;
+    }
   }
 }
