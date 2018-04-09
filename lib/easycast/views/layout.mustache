@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" type="text/css" href="/webassets/vendor.css"/>
   <link rel="stylesheet" type="text/css" href="/webassets/easycast.css"/>
+  {{#all_resources}}
+  <link rel="preload" href="{{path}}" as="{{as}}">
+  {{/all_resources}}
   <script src="/webassets/vendor.js"></script>
   <script src="/webassets/easycast.js"></script>
 </head>

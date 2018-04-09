@@ -11,6 +11,10 @@ module Easycast
       end
       attr_reader :config, :state
 
+      def all_resources
+        []
+      end
+
       def walk
         state.walk
       end

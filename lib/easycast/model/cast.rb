@@ -7,7 +7,11 @@ module Easycast
   class Cast < OpenStruct
 
     def assets
-      self[:assets].map{|a| Asset.for(a) }
+      @assets ||= self[:assets].map{|a| Asset.for(a) }
+    end
+
+    def all_resources
+      @all_resources ||= assets.map{|a| a.all_resources }.flatten
     end
 
   end # class Cast

@@ -11,6 +11,10 @@ module Easycast
       end
       attr_reader :display_index
 
+      def all_resources
+        display_cast.all_resources
+      end
+
       def title
         "Display #{display_index} | Easycast"
       end

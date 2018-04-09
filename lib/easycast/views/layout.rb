@@ -11,6 +11,10 @@ module Easycast
       end
       attr_reader :page
 
+      def all_resources
+        page.all_resources
+      end
+
       def title
         page.title
       end

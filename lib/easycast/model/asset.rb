@@ -35,6 +35,10 @@ module Easycast
       (SCENES_FOLDER/"assets"/@path).read
     end
 
+    def all_resources
+      []
+    end
+
     def to_html
       raise NotImplementedError
     end
@@ -61,12 +65,20 @@ module Easycast
         %Q{<img src="/#{@path}">}
       end
 
+      def all_resources
+        [ { path: "/#{@path}", as: "image" } ]
+      end
+
     end # class Png
 
     class Jpg < Asset
 
       def to_html
         %Q{<img src="/#{@path}">}
+      end
+
+      def all_resources
+        [ { path: "/#{@path}", as: "image" } ]
       end
 
     end # class Jpg
@@ -80,6 +92,10 @@ This browser does not support the video tag.
 </video>}
       end
 
+      def all_resources
+        [ { path: "/#{@path}", as: "video" } ]
+      end
+
     end # class Mp4
 
     class Webm < Asset
@@ -89,6 +105,10 @@ This browser does not support the video tag.
   <source src="/#{@path}" type="video/webm">
 This browser does not support the video tag.
 </video>}
+      end
+
+      def all_resources
+        [ { path: "/#{@path}", as: "video" } ]
       end
 
     end # class Webm
@@ -102,6 +122,10 @@ This browser does not support the video tag.
 </video>}
       end
 
+      def all_resources
+        [ { path: "/#{@path}", as: "video" } ]
+      end
+
     end # class Ogg
 
     class Gallery < Asset
@@ -110,6 +134,10 @@ This browser does not support the video tag.
         super(arg)
       end
   
+      def all_resources
+        @assets.map{|a| a.all_resources }.flatten
+      end
+
       def to_html
         interval = @options[:interval] * 1000
         <<-HTML
