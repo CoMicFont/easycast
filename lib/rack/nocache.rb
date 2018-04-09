@@ -15,7 +15,7 @@ module Rack
     }
 
     ALLOW_CACHE = {
-      "Cache-Control" => "public, max-age=31536000, must-revalidate"
+      "Cache-Control" => "public, max-age=31536000"
     }
 
     def initialize(app)

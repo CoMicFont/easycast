@@ -10,7 +10,7 @@ module Easycast
     it 'serves the webassets without trouble' do
       get '/webassets/easycast.js'
       expect(last_response.status).to eql(200)
-      expect(last_response).to allow_cache(['Etag'])
+      expect(last_response).to allow_cache(['ETag'])
     end
 
     it 'serves the home page without trouble' do

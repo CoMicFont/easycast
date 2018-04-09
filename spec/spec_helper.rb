@@ -5,7 +5,7 @@ require 'rack/test'
 RSpec::Matchers.define :allow_cache do |hs|
   match do |actual|
     hs.all?{|h| not(actual[h].nil?) } && \
-    (actual['Cache-Control'] =~ /public, max-age=3600, must-revalidate/)
+    (actual['Cache-Control'] =~ /public, max-age=31536000/)
   end
 end
 
