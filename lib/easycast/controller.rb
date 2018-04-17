@@ -71,7 +71,7 @@ module Easycast
     ## Updates the current walk state to the i-th node
     ##
     post '/walk/state/:i' do |i|
-      settings.walk = settings.walk.jump(i.to_i)
+      set_walk settings.walk.jump(i.to_i)
       serve_nothing
     end
 
@@ -79,7 +79,7 @@ module Easycast
     ## Moves the current walk state to the next scene
     ##
     post '/walk/next' do
-      settings.walk = settings.walk.next
+      set_walk settings.walk.next
       serve_nothing
     end
 
@@ -87,7 +87,7 @@ module Easycast
     ## Moves the current walk state to the previous scene
     ##
     post '/walk/previous' do
-      settings.walk = settings.walk.previous
+      set_walk settings.walk.previous
       serve_nothing
     end
 
@@ -98,32 +98,47 @@ module Easycast
     end
 
     scheduler.interval(settings.config.animation[:frequency]) do
-      settings.walk = settings.walk.next(true)
+      settings.set_walk settings.walk.next(true)
     end
 
     scheduler.pause unless settings.config.animation[:autoplay]
 
     post '/scheduler/pause' do
-      scheduler.pause unless scheduler.paused?
+      unless scheduler.paused?
+        settings.state_change{ scheduler.pause }
+      end
       204
     end
 
     post '/scheduler/resume' do
-      scheduler.resume if scheduler.paused?
+      if scheduler.paused?
+        settings.state_change{ scheduler.resume }
+      end
       204
     end
 
     post '/scheduler/toggle' do
       if scheduler.paused?
-        scheduler.resume
+        settings.state_change{ scheduler.resume }
         201
       else
-        scheduler.pause
+        settings.state_change{ scheduler.pause }
         204
       end
     end
 
   ### Controller state
+
+    def self.get_external_state
+      {
+        walkIndex: self.walk.state,
+        paused: self.scheduler.paused?
+      }
+    end
+
+    def get_external_state
+      settings.get_external_state
+    end
 
     def get_state
       OpenStruct.new({
@@ -133,17 +148,34 @@ module Easycast
       })
     end
 
+    def self.state_change(&bl)
+      old_ext_state = get_external_state
+      bl.call
+      new_ext_state = get_external_state
+      notify(new_ext_state) if (old_ext_state != new_ext_state)
+    end
+
+    def self.set_walk(walk)
+      state_change{ settings.walk = walk }
+    end
+
+    def set_walk(walk)
+      settings.set_walk(walk)
+    end
+
     ##
     ## Returns the current state of the controller, i.e.
     ## current node and scheduler state.
     ##
     get '/state' do
       content_type :json
-      state = get_state
-      {
-        walkIndex: state.walk.state,
-        paused: state.scheduler.paused?
-      }.to_json
+      get_external_state.to_json
+    end
+
+    def self.notify(state)
+    end
+
+    def notify(state)
     end
 
   private
