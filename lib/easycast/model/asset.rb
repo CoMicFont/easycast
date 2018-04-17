@@ -143,7 +143,7 @@ This browser does not support the video tag.
         <<-HTML
 <div id="#{@id}" class="gallery">
   #{@assets.map { |a| a.to_html }.join("\n  ")}
-  <script>installGallery("#{@id}", #{interval});</script>
+  <script>jQuery(function(){ installGallery("#{@id}", #{interval}); });</script>
 </div>
 HTML
       end
