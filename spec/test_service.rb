@@ -17,7 +17,7 @@ module Easycast
       get '/'
       expect(last_response.status).to eql(200)
       expect(last_response.body).to match("<html")
-      expect(last_response.body).to match(/easycast(-\d+\.\d+\.\d+)?.css/)
+      expect(last_response.body).to match(/easycast(-\d+\.\d+\.\d+)?(.min)?.css/)
       expect(last_response).to disallow_cache
     end
 

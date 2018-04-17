@@ -28,7 +28,7 @@ module Easycast
 
       it 'does not version the assets by default' do
         get subject
-        expect(last_response.body).to match(/easycast(-\d+\.\d+\.\d+)?.css/)
+        expect(last_response.body).to match(/easycast(-\d+\.\d+\.\d+)?(.min)?.css/)
       end
     end
 
