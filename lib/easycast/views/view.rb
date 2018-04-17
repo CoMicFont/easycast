@@ -30,6 +30,10 @@ module Easycast
         }.to_json
       end
 
+      def main_script
+        nil
+      end
+
     end
   end
 end

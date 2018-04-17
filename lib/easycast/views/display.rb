@@ -39,6 +39,10 @@ module Easycast
         walk.current_scene
       end
 
+      def main_script
+        "jQuery(function(){ refresh(#{state_json}, refreshDisplay); });"
+      end
+
     end
   end
 end

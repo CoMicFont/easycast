@@ -187,6 +187,8 @@ module Easycast
       end
       if has_error?
         Views::Error.new(settings.config, settings.load_error).render
+      elsif env['HTTP_ACCEPT'] == "application/vnd.easycast.display+html"
+        Views::Partial.new(view).render
       else
         Views::Layout.new(view).render
       end
@@ -204,6 +206,7 @@ module Easycast
 end # module Easycast
 require_relative 'views/view'
 require_relative 'views/layout'
+require_relative 'views/partial'
 require_relative 'views/home'
 require_relative 'views/display'
 require_relative 'views/remote'
