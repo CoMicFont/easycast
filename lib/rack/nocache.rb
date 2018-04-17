@@ -30,7 +30,11 @@ module Rack
   protected
 
     def patch_response_headers(status, hs)
-      hs.merge(status == 304 || hs['ETag'] || hs['Last-Modified'] ? ALLOW_CACHE : CACHE_BUSTER)
+      if Easycast::DEVELOPMENT_MODE
+        hs.merge(CACHE_BUSTER)
+      else
+        hs.merge(status == 304 || hs['ETag'] || hs['Last-Modified'] ? ALLOW_CACHE : CACHE_BUSTER)
+      end
     end
 
   end # class Nocache
