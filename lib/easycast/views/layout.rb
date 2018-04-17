@@ -31,6 +31,10 @@ module Easycast
         page.render
       end
 
+      def main_script
+        page.main_script
+      end
+
     end
   end
 end

@@ -37,6 +37,10 @@ module Easycast
         "/refresh"
       end
 
+      def main_script
+        "jQuery(function(){ refresh(#{state_json}, refreshRemote); });"
+      end
+
     end
   end
 end

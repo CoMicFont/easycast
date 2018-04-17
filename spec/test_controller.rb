@@ -93,5 +93,15 @@ module Easycast
 
     end
 
+    describe "GET /display/:i in partial mode" do
+
+      it 'returns the display body only' do
+        header('Accept', "application/vnd.easycast.display+html")
+        get '/display/0'
+        expect(last_response).not_to match(/<body/)
+      end
+
+    end
+
   end
 end
