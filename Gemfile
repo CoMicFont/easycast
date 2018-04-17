@@ -12,6 +12,7 @@ gem 'sprockets', '~> 3.7'
 gem 'uglifier', '~> 3.1'
 gem 'sass', '~> 3.4'
 gem "rufus-scheduler", "~> 3.4"
+gem "tzinfo-data"
 
 group :test do
   gem 'rake', '~> 12.0'
