@@ -10,7 +10,7 @@ require 'rufus/scheduler'
 module Easycast
 
   # Version of Easycast software
-  VERSION = "1.3.3"
+  VERSION = "1.3.4"
 
   # Root folder of the project structure
   ROOT_FOLDER = Path.backfind('.[Gemfile]') or raise("Missing Gemfile")
