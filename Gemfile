@@ -13,6 +13,7 @@ gem 'uglifier', '~> 3.1'
 gem 'sass', '~> 3.4'
 gem "rufus-scheduler", "~> 3.4"
 gem "tzinfo-data"
+gem "thin"
 
 group :test do
   gem 'rake', '~> 12.0'

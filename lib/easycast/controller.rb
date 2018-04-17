@@ -172,10 +172,25 @@ module Easycast
       get_external_state.to_json
     end
 
+  ### Streaming approach
+
+    set connections: []
+
+    get '/notifications', provides: 'text/event-stream' do
+      stream :keep_open do |out|
+        settings.connections << out
+        out.callback { settings.connections.delete(out) }
+      end
+    end
+
     def self.notify(state)
+      settings.connections.each do |out|
+        out << "data: " << state.to_json << "\n\n"
+      end
     end
 
     def notify(state)
+      settings.notify(state)
     end
 
   private
