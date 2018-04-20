@@ -93,14 +93,11 @@ module Easycast
     class Mp4 < Asset
 
       def to_html
-        %Q{<video autoplay>
-  <source src="/#{@path}" type="video/mp4">
-This browser does not support the video tag.
-</video>}
+        %Q{<video autoplay source src="/#{@path}" type="video/mp4">This browser does not support the video tag.</video>}
       end
 
       def all_resources
-        [ { path: "/#{@path}", as: "video" } ]
+        []
       end
 
     end # class Mp4
@@ -108,14 +105,11 @@ This browser does not support the video tag.
     class Webm < Asset
 
       def to_html
-        %Q{<video autoplay>
-  <source src="/#{@path}" type="video/webm">
-This browser does not support the video tag.
-</video>}
+        %Q{<video preload autoplay src="/#{@path}" type="video/webm">This browser does not support the video tag.</video>}
       end
 
       def all_resources
-        [ { path: "/#{@path}", as: "video" } ]
+        []
       end
 
     end # class Webm
@@ -123,14 +117,11 @@ This browser does not support the video tag.
     class Ogg < Asset
 
       def to_html
-        %Q{<video autoplay>
-  <source src="/#{@path}" type="video/ogg">
-This browser does not support the video tag.
-</video>}
+        %Q{<video preload autoplay src="/#{@path}" type="video/ogg">This browser does not support the video tag.</video>}
       end
 
       def all_resources
-        [ { path: "/#{@path}", as: "video" } ]
+        []
       end
 
     end # class Ogg
