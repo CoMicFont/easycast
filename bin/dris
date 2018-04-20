@@ -2,3 +2,4 @@
 apt-get update
 apt-get dist-upgrade
 apt-get install dnsmasq hostapd vim ruby-dev unclutter xdotool
+gem install --no-rdoc --no-ri bundler

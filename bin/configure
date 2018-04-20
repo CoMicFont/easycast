@@ -11,7 +11,7 @@ options = {
 }
 
 OptionParser.new do |opts|
-  opts.banner = "Usage: configure [options] CONFIG..."
+  opts.banner = "Usage: [sudo] configure [options] CONFIG..."
 
   opts.on("--[no-]dry-run", "Do not do anything real") do |v|
     options[:dry_run] = v

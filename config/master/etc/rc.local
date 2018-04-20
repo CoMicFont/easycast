@@ -18,6 +18,6 @@ if [ "$_IP" ]; then
 fi
 
 cd /home/pi/easycast
-/usr/local/bin/bundle exec rackup --host 0.0.0.0 --port 80
+/usr/local/bin/bundle exec thin --address 0.0.0.0 --port 80 --threaded --threadpool-size 5 start
 
 exit 0
