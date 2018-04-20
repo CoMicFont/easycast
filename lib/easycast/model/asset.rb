@@ -8,15 +8,9 @@ module Easycast
   class Asset
 
     def initialize(arg)
-      if arg.is_a?(Hash)
-        # this is a gallery asset
-        @options = arg[:options] || { interval: 2 }
-        @assets  = arg[:images].map { |i| Asset.for(i) }
-      else
-        # this is a path asset
-        @path = arg
-      end
+      @path = arg
     end
+    attr_reader :path
 
     def self.for(path)
       case path
@@ -27,12 +21,25 @@ module Easycast
       when /.mp4$/   then Asset::Mp4.new(path)
       when /.webm$/  then Asset::Webm.new(path)
       when /.ogg$/   then Asset::Ogg.new(path)
-      else                Asset::Gallery.new(path)
+      when Hash
+        case path[:type]
+        when 'gallery' then Asset::Gallery.new(path)
+        when 'layers'  then Asset::Layers.new(path)
+        else raise ArgumentError, "Unknown type `#{path[:type]}`"
+        end
       end
     end
 
+    def file
+      SCENES_FOLDER/"assets"/@path
+    end
+
+    def ensure!
+      raise ConfigError, "No such file `#{file}`" unless file.exists?
+    end
+
     def file_contents
-      (SCENES_FOLDER/"assets"/@path).read
+      file.read
     end
 
     def all_resources
@@ -129,11 +136,19 @@ This browser does not support the video tag.
     end # class Ogg
 
     class Gallery < Asset
+
       def initialize(arg)
         @id = SecureRandom.uuid
-        super(arg)
+        @options = arg[:options] || { interval: 2 }
+        @assets  = arg[:images].map { |i| Asset.for(i) }
       end
-  
+
+      def ensure!
+        @assets.each do |a|
+          a.ensure!
+        end
+      end
+
       def all_resources
         @assets.map{|a| a.all_resources }.flatten
       end
@@ -148,7 +163,45 @@ This browser does not support the video tag.
 HTML
       end
 
-    end # class Gallery
+    end
+
+    class Layers < Asset
+
+      def initialize(arg)
+        @options = arg[:options] || { }
+        @assets  = arg[:images].map { |i| Asset.for(i) }
+        @sha = Digest::SHA1.hexdigest(@assets.map{|a| a.path }.join('/'))
+        @path = "generated/#{@sha}.png"
+        @file = SCENES_FOLDER/("assets/#{@path}")
+      end
+
+      def ensure!
+        @assets.each do |a|
+          a.ensure!
+        end
+        generate_layer!
+      end
+
+      def all_resources
+        [ { path: "/#{@path}", as: "image" } ]
+      end
+
+      def to_html
+        %Q{<img src="/#{@path}">}
+      end
+
+    private
+
+      def generate_layer!
+        return if @file.exists?
+        @file.parent.mkdir_p unless @file.parent.exists?
+        cmd = %Q{convert #{@assets.map{|a| a.file}.join(' ')} -background none -flatten #{@file}}
+        puts "Generating asset `#{@file}`"
+        puts "#{cmd}"
+        `#{cmd}`
+      end
+
+    end # class Layers
 
   end # class Asset
 end # module Easycast

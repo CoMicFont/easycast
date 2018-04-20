@@ -54,6 +54,20 @@ scenes:
       - slideshow/03.jpg
       - slideshow/04.jpg
 
+##
+
+- id: layers
+  name: Layers Demonstration
+  cast:
+  - display: 0
+    remote: true
+    assets:
+    - type: layers
+      images:
+      - layers/01.png
+      - layers/02.png
+      - layers/03.png
+
 # Nodes provides the hierarchical organisation of the available
 # scenes. This is the tree that displays in the menu and remote.
 nodes:
@@ -67,6 +81,8 @@ nodes:
 - scene: concepts
   repeat: 10
 - scene: slideshow
+  repeat: 10
+- scene: layers
   repeat: 10
 
 # This configuration variable handles the automatic walk

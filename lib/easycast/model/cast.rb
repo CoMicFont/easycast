@@ -10,6 +10,12 @@ module Easycast
       @assets ||= self[:assets].map{|a| Asset.for(a) }
     end
 
+    def ensure_assets!
+      assets.each do |a|
+        a.ensure!
+      end
+    end
+
     def all_resources
       @all_resources ||= assets.map{|a| a.all_resources }.flatten
     end

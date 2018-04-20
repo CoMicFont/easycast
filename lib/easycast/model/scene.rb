@@ -6,6 +6,12 @@ module Easycast
   #
   class Scene < OpenStruct
 
+    def ensure_assets!
+      cast.each do |c|
+        Cast.new(c).ensure_assets!
+      end
+    end
+
     #
     # Returns the case to use for a given display.
     #

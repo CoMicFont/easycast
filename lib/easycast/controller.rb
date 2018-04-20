@@ -16,10 +16,11 @@ module Easycast
   ### Scenes configuration
 
     def self.load_config
-      set :config, Config.load(SCENES_FOLDER)
+      set :config, config = Config.load(SCENES_FOLDER)
       set :walk, Walk.new(config)
       set :load_error, nil
       set :scheduler, Rufus::Scheduler.new
+      config
     rescue => ex
       LOGGER.fatal(ex.message)
       set :config, nil
@@ -27,7 +28,7 @@ module Easycast
       set :load_error, ex
       set :scheduler, nil
     end
-    load_config
+    load_config.ensure_assets!
 
   ### Display and remote control
 

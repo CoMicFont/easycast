@@ -7,6 +7,7 @@ require 'sprockets'
 require 'mustache'
 require 'rack/nocache'
 require 'rufus/scheduler'
+require 'digest'
 module Easycast
 
   # Version of Easycast software

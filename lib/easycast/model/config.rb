@@ -19,10 +19,16 @@ module Easycast
         images  :  [AssetPath]
       }
 
+      Layers = {
+        type    : String( s | s == "layers" )
+        options :? AssetOptions
+        images  :  [AssetPath]
+      }
+
       Cast = {
         display: Integer
         remote: Boolean
-        assets: [AssetPath|Gallery]
+        assets: [AssetPath|Gallery|Layers]
       }
 
       Scene.Id = String
@@ -82,6 +88,12 @@ module Easycast
     def scene_by_id(id)
       @scenes_by_id ||= scenes.each_with_object({}){|s,h| h[s[:id]] = Scene.new(s) }
       @scenes_by_id[id]
+    end
+
+    def ensure_assets!
+      scenes.each do |s|
+        Scene.new(s).ensure_assets!
+      end
     end
 
   private
