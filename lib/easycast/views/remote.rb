@@ -37,6 +37,14 @@ module Easycast
         "/refresh"
       end
 
+      def restart_href
+        "/restart"
+      end
+
+      def reboot_href
+        "/reboot"
+      end
+
       def main_script
         "jQuery(function(){ refresh(#{state_json}, refreshRemote); });"
       end

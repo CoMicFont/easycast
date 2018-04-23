@@ -61,8 +61,27 @@ module Easycast
     ## Force all displays to refresh
     ##
     post '/refresh' do
-      [ 'easycast', 'raspberrypi' ].map{|ip|
-        `ssh -i /home/pi/.ssh/id_rsa -o StrictHostKeyChecking=no pi@#{ip} /home/pi/easycast/bin/refresh-display`
+      distant_exec("refresh-display")
+    end
+
+    ##
+    ## Force all displays to restart
+    ##
+    post '/restart' do
+      distant_exec("restart-display")
+    end
+
+    ##
+    ## Force all displays to restart
+    ##
+    post '/reboot' do
+      distant_exec("reboot-display")
+    end
+
+    def distant_exec(cmd)
+      [ 'easycast', 'easyslave' ].map{|ip|
+        LOGGER.info("Sending `#{cmd}` to #{ip}")
+        LOGGER.debug(`ssh -i /home/pi/.ssh/id_rsa -o StrictHostKeyChecking=no pi@#{ip} /home/pi/easycast/bin/#{cmd}`)
       }.join("\n")
     end
 
