@@ -1,11 +1,11 @@
 module Easycast
   class Walk
 
-    def initialize(config, linearization = nil, state = nil, repeat = 1)
+    def initialize(config, linearization = nil, state = nil, repeat = nil)
       @config = config
       @linearization = linearization || linearize_nodes([], config.nodes, 0)
       @state = state || find_next(-1)
-      @repeat = repeat || 1
+      @repeat = repeat || @linearization[@state][:repeat] || 1
 
       # Class invariant, the current state is the index of the current node
       raise "illegal state" unless @linearization[@state][:index] == @state
