@@ -146,10 +146,11 @@ module Easycast
 
       def to_html
         interval = @options[:interval] * 1000
+        images = @assets.map{|a| "/#{a.path}" }
         <<-HTML
 <div id="#{@id}" class="gallery">
-  #{@assets.map { |a| a.to_html }.join("\n  ")}
-  <script>jQuery(function(){ installGallery("#{@id}", #{interval}); });</script>
+  <img />
+  <script>jQuery(function(){ installGallery("#{@id}", #{images.to_json}, #{interval}); });</script>
 </div>
 HTML
       end
