@@ -11,7 +11,7 @@ require 'digest'
 module Easycast
 
   # Version of Easycast software
-  VERSION = "1.4.2"
+  VERSION = "1.5.0"
 
   # Root folder of the project structure
   ROOT_FOLDER = Path.backfind('.[Gemfile]') or raise("Missing Gemfile")
