@@ -132,27 +132,49 @@ module Easycast
         @id = SecureRandom.uuid
         @options = arg[:options] || { interval: 2 }
         @assets  = arg[:images].map { |i| Asset.for(i) }
+        @target = SCENES_FOLDER/("assets/galleries")
       end
 
       def ensure!
         @assets.each do |a|
           a.ensure!
         end
+        generate_images!
       end
 
       def all_resources
-        @assets.map{|a| a.all_resources }.flatten
+        @generated.map{|a| { path: a, as: "image" } }
       end
 
       def to_html
         interval = @options[:interval] * 1000
-        images = @assets.map{|a| "/#{a.path}" }
         <<-HTML
 <div id="#{@id}" class="gallery">
   <img />
-  <script>jQuery(function(){ installGallery("#{@id}", #{images.to_json}, #{interval}); });</script>
+  <script>jQuery(function(){ installGallery("#{@id}", #{@generated.to_json}, #{interval}); });</script>
 </div>
 HTML
+      end
+
+    private
+
+      def generate_images!
+        @target.mkdir_p unless @target.exists?
+        @generated = []
+        @assets.each do |a|
+          name = Digest::SHA1.hexdigest(a.path)
+          file = (@target/name).sub_ext(a.file.ext)
+          unless file.exists?
+            puts "Generating gallery image for `#{a.path}`"
+            [
+              %Q{convert -resize 1920x #{a.file} #{file}}
+            ].each do |cmd|
+              puts "#{cmd}"
+              `#{cmd}`
+            end
+          end
+          @generated << "/galleries/#{name}.#{a.file.ext}"
+        end
       end
 
     end

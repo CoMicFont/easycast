@@ -7,8 +7,8 @@ module Easycast
   class Scene < OpenStruct
 
     def ensure_assets!
-      cast.each do |c|
-        Cast.new(c).ensure_assets!
+      _cast.each do |c|
+        c.ensure_assets!
       end
     end
 
@@ -19,7 +19,13 @@ module Easycast
     # @pre display_index < number of available displays
     #
     def cast_at(display_index)
-      Cast.new self.cast.find{|c| c[:display] == display_index }
+      _cast.find{|c| c[:display] == display_index }
+    end
+
+  private
+
+    def _cast
+      @_cast ||= cast.map{|c| Cast.new(c) }
     end
 
   end # class Scene

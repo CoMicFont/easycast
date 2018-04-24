@@ -86,17 +86,21 @@ module Easycast
     end
 
     def scene_by_id(id)
-      @scenes_by_id ||= scenes.each_with_object({}){|s,h| h[s[:id]] = Scene.new(s) }
+      @scenes_by_id ||= _scenes.each_with_object({}){|s,h| h[s[:id]] = s }
       @scenes_by_id[id]
     end
 
     def ensure_assets!
-      scenes.each do |s|
-        Scene.new(s).ensure_assets!
+      _scenes.each do |s|
+        s.ensure_assets!
       end
     end
 
   private
+
+    def _scenes
+      @_scenes ||= scenes.map{|s| Scene.new(s) }
+    end
 
     def ensure_animation!(data)
       data[:animation] ||= {}
