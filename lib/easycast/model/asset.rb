@@ -163,7 +163,7 @@ HTML
         @options = arg[:options] || { }
         @assets  = arg[:images].map { |i| Asset.for(i) }
         @sha = Digest::SHA1.hexdigest(@assets.map{|a| a.path }.join('/'))
-        @path = "generated/#{@sha}.png"
+        @path = "layers/#{@sha}.png"
         @file = SCENES_FOLDER/("assets/#{@path}")
       end
 
@@ -187,10 +187,14 @@ HTML
       def generate_layer!
         return if @file.exists?
         @file.parent.mkdir_p unless @file.parent.exists?
-        cmd = %Q{convert #{@assets.map{|a| a.file}.join(' ')} -background none -flatten #{@file}}
         puts "Generating asset `#{@file}`"
-        puts "#{cmd}"
-        `#{cmd}`
+        [
+          %Q{convert #{@assets.map{|a| a.file}.join(' ')} -background none -flatten #{@file}},
+          %Q{convert -resize 1920x #{@file} #{@file}}
+        ].each do |cmd|
+          puts "#{cmd}"
+          `#{cmd}`
+        end
       end
 
     end # class Layers
