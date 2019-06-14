@@ -68,6 +68,17 @@ scenes:
       - layers/02.png
       - layers/03.png
 
+##
+
+- id: qgis
+  name: QGIS Demonstration
+  cast:
+  - display: 0
+    remote: true
+    assets:
+    - type: qgis
+      home: qgis/index.html
+
 # Nodes provides the hierarchical organisation of the available
 # scenes. This is the tree that displays in the menu and remote.
 nodes:
@@ -83,6 +94,8 @@ nodes:
 - scene: slideshow
   repeat: 10
 - scene: layers
+  repeat: 10
+- scene: qgis
   repeat: 10
 
 # This configuration variable handles the automatic walk

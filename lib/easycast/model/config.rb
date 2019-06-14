@@ -25,10 +25,15 @@ module Easycast
         images  :  [AssetPath]
       }
 
+      QGIS = {
+        type    : String( s | s == "qgis" )
+        home    : AssetPath
+      }
+
       Cast = {
         display: Integer
         remote: Boolean
-        assets: [AssetPath|Gallery|Layers]
+        assets: [AssetPath|Gallery|Layers|QGIS]
       }
 
       Scene.Id = String
