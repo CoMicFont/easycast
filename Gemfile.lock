@@ -15,7 +15,7 @@ GEM
       tzinfo
     eventmachine (1.2.5)
     execjs (2.7.0)
-    ffi (1.9.18)
+    ffi (1.11.1)
     finitio (0.5.2)
       citrus (>= 2.4, < 4.0)
     http (2.2.2)
