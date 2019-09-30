@@ -93,7 +93,7 @@ module Easycast
     class Mp4 < Asset
 
       def to_html
-        %Q{<video autoplay source src="/#{@path}" type="video/mp4">This browser does not support the video tag.</video>}
+        %Q{<video playsinline autoplay muted loop source src="/#{@path}" type="video/mp4">This browser does not support the video tag.</video>}
       end
 
       def all_resources

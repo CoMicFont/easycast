@@ -1,3 +1,5 @@
+ENV['TZ'] = "Europe/Brussels"
+
 require 'path'
 require 'finitio'
 require 'logger'
