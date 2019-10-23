@@ -1,4 +1,5 @@
 require 'easycast'
+require 'easycast/service'
 require 'rspec'
 require 'rack/test'
 

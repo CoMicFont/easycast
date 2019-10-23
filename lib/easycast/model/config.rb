@@ -96,6 +96,21 @@ module Easycast
       end
     end
 
+    def check!
+      check_nodes!(nodes)
+    end
+
+    def check_nodes!(nodes)
+      nodes.each do |node|
+        if node[:scene]
+          scene = scene_by_id(node[:scene])
+          raise "Unknown scene `#{node[:scene]}`" unless scene
+        elsif node[:children]
+          check_nodes!(node[:children])
+        end
+      end
+    end
+
   private
 
     def _scenes

@@ -7,11 +7,6 @@ module Easycast
   #
   class Asset
 
-    def initialize(arg)
-      @path = arg
-    end
-    attr_reader :path
-
     def self.for(path)
       case path
       when /.html$/  then Asset::Html.new(path)
@@ -27,19 +22,9 @@ module Easycast
         when 'layers'  then Asset::Layers.new(path)
         else raise ArgumentError, "Unknown type `#{path[:type]}`"
         end
+      else
+        raise ArgumentError, "Unrecognized asset type `#{path}`"
       end
-    end
-
-    def file
-      SCENES_FOLDER/"assets"/@path
-    end
-
-    def ensure!
-      raise ConfigError, "No such file `#{file}`" unless file.exists?
-    end
-
-    def file_contents
-      file.read
     end
 
     def all_resources
@@ -50,7 +35,29 @@ module Easycast
       raise NotImplementedError
     end
 
-    class Html < Asset
+    class SimpleFile < Asset
+
+      def initialize(arg)
+        @path = arg
+        raise ConfigError, "Missing file `#{arg}`" unless file.exists?
+      end
+      attr_reader :path
+
+      def file
+        SCENES_FOLDER/"assets"/@path
+      end
+
+      def file_contents
+        file.read
+      end
+
+      def ensure!
+        raise ConfigError, "No such file `#{file}`" unless file.exists?
+      end
+
+    end
+
+    class Html < SimpleFile
 
       def to_html
         "<article>" + file_contents + "</article>"
@@ -58,7 +65,7 @@ module Easycast
 
     end # class Html
 
-    class Svg < Asset
+    class Svg < SimpleFile
 
       def to_html
         file_contents
@@ -66,7 +73,7 @@ module Easycast
 
     end # class Svg
 
-    class Png < Asset
+    class Png < SimpleFile
 
       def to_html
         %Q{<img src="/#{@path}">}
@@ -78,7 +85,7 @@ module Easycast
 
     end # class Png
 
-    class Jpg < Asset
+    class Jpg < SimpleFile
 
       def to_html
         %Q{<img src="/#{@path}">}
@@ -90,7 +97,7 @@ module Easycast
 
     end # class Jpg
 
-    class Mp4 < Asset
+    class Mp4 < SimpleFile
 
       def to_html
         %Q{<video playsinline autoplay muted loop source src="/#{@path}" type="video/mp4">This browser does not support the video tag.</video>}
@@ -102,7 +109,7 @@ module Easycast
 
     end # class Mp4
 
-    class Webm < Asset
+    class Webm < SimpleFile
 
       def to_html
         %Q{<video preload autoplay src="/#{@path}" type="video/webm">This browser does not support the video tag.</video>}
@@ -114,7 +121,7 @@ module Easycast
 
     end # class Webm
 
-    class Ogg < Asset
+    class Ogg < SimpleFile
 
       def to_html
         %Q{<video preload autoplay src="/#{@path}" type="video/ogg">This browser does not support the video tag.</video>}
@@ -126,7 +133,17 @@ module Easycast
 
     end # class Ogg
 
-    class Gallery < Asset
+    class CompoundAsset < Asset
+
+      def ensure!
+        @assets.each do |a|
+          a.ensure!
+        end
+      end
+
+    end # class CompoundAsset
+
+    class Gallery < CompoundAsset
 
       def initialize(arg)
         @id = SecureRandom.uuid
@@ -136,9 +153,7 @@ module Easycast
       end
 
       def ensure!
-        @assets.each do |a|
-          a.ensure!
-        end
+        super
         generate_images!
       end
 
@@ -179,7 +194,7 @@ HTML
 
     end
 
-    class Layers < Asset
+    class Layers < CompoundAsset
 
       def initialize(arg)
         @options = arg[:options] || { }
@@ -190,9 +205,7 @@ HTML
       end
 
       def ensure!
-        @assets.each do |a|
-          a.ensure!
-        end
+        super
         generate_layer!
       end
 

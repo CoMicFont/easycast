@@ -1,12 +1,5 @@
 namespace :assets do
 
-  task :require do
-    $:.unshift File.expand_path('../../lib', __FILE__)
-    require 'easycast'
-    require 'uglifier'
-    include Easycast
-  end
-
   task :prepare => :require do
     FileUtils.mkdir_p WEBASSETS_FOLDER
   end

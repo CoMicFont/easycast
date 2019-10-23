@@ -9,4 +9,11 @@ Dir["tasks/*.rake"].each do |taskfile|
   load taskfile
 end
 
+task :require do
+  $:.unshift File.expand_path('../lib', __FILE__)
+  require 'easycast'
+  require 'uglifier'
+  include Easycast
+end
+
 task :default => :test
