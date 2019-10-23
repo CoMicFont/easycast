@@ -6,6 +6,12 @@ module Easycast
   #
   class Scene < OpenStruct
 
+    def initialize(data, config)
+      super(data)
+      @config = config
+    end
+    attr_reader :config
+
     def ensure_assets!
       _cast.each do |c|
         c.ensure_assets!
@@ -25,7 +31,7 @@ module Easycast
   private
 
     def _cast
-      @_cast ||= cast.map{|c| Cast.new(c) }
+      @_cast ||= cast.map{|c| Cast.new(c, config) }
     end
 
   end # class Scene

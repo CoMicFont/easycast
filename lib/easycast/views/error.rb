@@ -3,13 +3,17 @@ module Easycast
     #
     # Error view, providing information when the loading goes wrong
     #
-    class Error < View
+    class Error < Mustache
 
       def initialize(config, load_error)
-        super(config)
+        @config = config
         @load_error = load_error
       end
-      attr_reader :load_error
+      attr_reader :config, :load_error
+
+      def all_resources
+        []
+      end
 
       def body_class
         "error"
@@ -25,6 +29,10 @@ module Easycast
 
       def error_backtrace
         load_error.backtrace.join("\n")
+      end
+
+      def main_script
+        nil
       end
 
     end

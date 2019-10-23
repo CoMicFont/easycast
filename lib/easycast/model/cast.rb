@@ -6,8 +6,14 @@ module Easycast
   #
   class Cast < OpenStruct
 
+    def initialize(data, config)
+      super(data)
+      @config = config
+    end
+    attr_reader :config
+
     def assets
-      @assets ||= self[:assets].map{|a| Asset.for(a) }
+      @assets ||= self[:assets].map{|a| Asset.for(a, config) }
     end
 
     def ensure_assets!

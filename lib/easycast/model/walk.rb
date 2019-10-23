@@ -5,8 +5,8 @@ module Easycast
       @config = config
       @linearization = linearization || linearize_nodes([], config.nodes, 0)
       @state = state || find_next(-1)
+      raise "illegal state" unless @state
       @repeat = repeat || @linearization[@state][:repeat] || 1
-
       # Class invariant, the current state is the index of the current node
       raise "illegal state" unless @linearization[@state][:index] == @state
     end

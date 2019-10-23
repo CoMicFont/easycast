@@ -7,19 +7,19 @@ module Easycast
   #
   class Asset
 
-    def self.for(path)
+    def self.for(path, config)
       case path
-      when /.html$/  then Asset::Html.new(path)
-      when /.svg$/   then Asset::Svg.new(path)
-      when /.png$/   then Asset::Png.new(path)
-      when /.jpe?g$/ then Asset::Jpg.new(path)
-      when /.mp4$/   then Asset::Mp4.new(path)
-      when /.webm$/  then Asset::Webm.new(path)
-      when /.ogg$/   then Asset::Ogg.new(path)
+      when /.html$/  then Asset::Html.new(path, config)
+      when /.svg$/   then Asset::Svg.new(path, config)
+      when /.png$/   then Asset::Png.new(path, config)
+      when /.jpe?g$/ then Asset::Jpg.new(path, config)
+      when /.mp4$/   then Asset::Mp4.new(path, config)
+      when /.webm$/  then Asset::Webm.new(path, config)
+      when /.ogg$/   then Asset::Ogg.new(path, config)
       when Hash
         case path[:type]
-        when 'gallery' then Asset::Gallery.new(path)
-        when 'layers'  then Asset::Layers.new(path)
+        when 'gallery' then Asset::Gallery.new(path, config)
+        when 'layers'  then Asset::Layers.new(path, config)
         else raise ArgumentError, "Unknown type `#{path[:type]}`"
         end
       else
@@ -37,14 +37,15 @@ module Easycast
 
     class SimpleFile < Asset
 
-      def initialize(arg)
-        @path = arg
-        raise ConfigError, "Missing file `#{arg}`" unless file.exists?
+      def initialize(path, config)
+        @path = path
+        @config = config
+        ensure!
       end
-      attr_reader :path
+      attr_reader :path, :config
 
       def file
-        SCENES_FOLDER/"assets"/@path
+        config.folder/"assets"/@path
       end
 
       def file_contents
@@ -52,7 +53,7 @@ module Easycast
       end
 
       def ensure!
-        raise ConfigError, "No such file `#{file}`" unless file.exists?
+        raise ConfigError, "No such file `#{path}`" unless file.exists?
       end
 
     end
@@ -97,43 +98,48 @@ module Easycast
 
     end # class Jpg
 
-    class Mp4 < SimpleFile
+    class Video < SimpleFile
 
       def to_html
-        %Q{<video playsinline autoplay muted loop source src="/#{@path}" type="video/mp4">This browser does not support the video tag.</video>}
+        %Q{<video playsinline autoplay muted loop source style="height: 100%" src="/#{@path}" type="#{video_type}">This browser does not support the video tag.</video>}
       end
 
       def all_resources
         []
+      end
+
+    end
+
+    class Mp4 < Video
+
+      def video_type
+        "video/mp4"
       end
 
     end # class Mp4
 
-    class Webm < SimpleFile
+    class Webm < Video
 
-      def to_html
-        %Q{<video preload autoplay src="/#{@path}" type="video/webm">This browser does not support the video tag.</video>}
-      end
-
-      def all_resources
-        []
+      def video_type
+        "video/webm"
       end
 
     end # class Webm
 
-    class Ogg < SimpleFile
+    class Ogg < Video
 
-      def to_html
-        %Q{<video preload autoplay src="/#{@path}" type="video/ogg">This browser does not support the video tag.</video>}
-      end
-
-      def all_resources
-        []
+      def video_type
+        "video/ogg"
       end
 
     end # class Ogg
 
     class CompoundAsset < Asset
+
+      def initialize(config)
+        @config = config
+      end
+      attr_reader :config
 
       def ensure!
         @assets.each do |a|
@@ -145,11 +151,12 @@ module Easycast
 
     class Gallery < CompoundAsset
 
-      def initialize(arg)
+      def initialize(arg, config)
+        super(config)
         @id = SecureRandom.uuid
         @options = arg[:options] || { interval: 2 }
-        @assets  = arg[:images].map { |i| Asset.for(i) }
-        @target = SCENES_FOLDER/("assets/galleries")
+        @assets  = arg[:images].map { |i| Asset.for(i, config) }
+        @target = config.folder/"assets/galleries"
       end
 
       def ensure!
@@ -196,12 +203,13 @@ HTML
 
     class Layers < CompoundAsset
 
-      def initialize(arg)
+      def initialize(arg, config)
+        super(config)
         @options = arg[:options] || { }
-        @assets  = arg[:images].map { |i| Asset.for(i) }
+        @assets  = arg[:images].map { |i| Asset.for(i, config) }
         @sha = Digest::SHA1.hexdigest(@assets.map{|a| a.path }.join('/'))
         @path = "layers/#{@sha}.png"
-        @file = SCENES_FOLDER/("assets/#{@path}")
+        @file = config.folder/("assets/#{@path}")
       end
 
       def ensure!

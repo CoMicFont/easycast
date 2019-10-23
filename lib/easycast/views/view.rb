@@ -6,6 +6,8 @@ module Easycast
     class View < Mustache
 
       def initialize(config, state)
+        raise ArgumentError, "Missing state" unless state
+        raise ArgumentError, "Missing state walk" unless state.walk
         @config = config
         @state = state
       end

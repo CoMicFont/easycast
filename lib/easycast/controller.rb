@@ -10,25 +10,33 @@ module Easycast
       also_reload 'lib/easycast/views/*.rb'
       also_reload 'lib/easycast/views/remote/*.rb'
       also_reload 'lib/easycast/model/*.rb'
+      also_reload 'lib/easycast/controller.rb'
       enable :reloader
     end
 
   ### Scenes configuration
 
-    def self.load_config
-      set :config, config = Config.load(SCENES_FOLDER)
+    def self.load_config(folder = SCENES_FOLDER)
+      # load the config and check it
+      set :config, Config.load(folder).check!.ensure_assets!
+      # initialize the walk
       set :walk, Walk.new(config)
-      set :load_error, nil
+      # create the scheduler and configure it
       set :scheduler, Rufus::Scheduler.new
-      config
+      scheduler.interval(config.animation[:frequency]) do
+        set_walk walk.next(true)
+      end
+      scheduler.pause unless config.animation[:autoplay]
+      # mark that everything is fine!
+      puts "Started successfull on #{folder}"
+      set :load_error, nil
     rescue => ex
-      LOGGER.fatal(ex.message)
       set :config, nil
       set :walk, nil
-      set :load_error, ex
       set :scheduler, nil
+      set :load_error, ex
     end
-    load_config.ensure_assets!
+    load_config
 
   ### Display and remote control
 
@@ -39,6 +47,8 @@ module Easycast
     get "/" do
       content_type :html
       serve Views::Home.new(settings.config, get_state)
+    rescue => ex
+      serve_error(ex)
     end
 
     ##
@@ -47,6 +57,8 @@ module Easycast
     get "/display/:i" do |i|
       content_type :html
       serve Views::Display.new(settings.config, get_state, i.to_i)
+    rescue => ex
+      serve_error(ex)
     end
 
     ##
@@ -55,6 +67,8 @@ module Easycast
     get '/remote' do
       content_type :html
       serve Views::Remote.new(settings.config, get_state)
+    rescue => ex
+      serve_error(ex)
     end
 
     ##
@@ -116,12 +130,6 @@ module Easycast
     def scheduler
       settings.scheduler
     end
-
-    scheduler.interval(settings.config.animation[:frequency]) do
-      settings.set_walk settings.walk.next(true)
-    end
-
-    scheduler.pause unless settings.config.animation[:autoplay]
 
     post '/scheduler/pause' do
       unless scheduler.paused?
@@ -216,17 +224,21 @@ module Easycast
   private
 
     def serve(view)
-      if DEVELOPMENT_MODE
-        settings.config = Config.load(SCENES_FOLDER)
-        settings.walk = Walk.new(settings.config, nil, settings.walk.state)
-      end
+      settings.load_config if has_error?
       if has_error?
-        Views::Error.new(settings.config, settings.load_error).render
+        serve_error
       elsif env['HTTP_ACCEPT'] == "application/vnd.easycast.display+html"
         Views::Partial.new(view).render
       else
         Views::Layout.new(view).render
       end
+    end
+
+    def serve_error(ex = settings.load_error)
+      view = Views::Error.new(settings.config, settings.load_error || ex)
+      Views::Layout.new(view).render.tap{
+        settings.load_config if has_error?
+      }
     end
 
     def serve_nothing

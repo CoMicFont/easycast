@@ -1,3 +1,8 @@
+## 1.7.0
+
+* Add better error handling, for easier start recovery when the scenes
+  are wrong for some reason.
+
 ## 1.6.2 - 2019-10-23
 
 * Add fixes for easycast to work under Windows
