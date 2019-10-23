@@ -1,6 +1,7 @@
 namespace :assets do
 
   task :prepare => :require do
+    require 'easycast/assets'
     FileUtils.mkdir_p WEBASSETS_FOLDER
   end
 
