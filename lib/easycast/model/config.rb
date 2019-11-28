@@ -56,6 +56,12 @@ module Easycast
           frequency : String
           autoplay  : Boolean
         }
+        videos:? {
+          loop: {
+            play: Boolean
+            pause: Boolean
+          }
+        }
       }
     FIO
 
@@ -113,6 +119,12 @@ module Easycast
           check_nodes!(node[:children])
         end
       end
+    end
+
+    def videos
+      self[:videos] || {
+        loop: { play: false, pause: true }
+      }
     end
 
   private

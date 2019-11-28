@@ -85,8 +85,12 @@ module Easycast
         expect(config.animation).to eql({frequency: "60s", autoplay: false})
       end
 
+      it 'has default options for videos' do
+        config = Config.dress(config_data)
+        expect(config.videos).to eql({loop: { play: false, pause: true }})
+      end
+
     end
 
   end
 end
-

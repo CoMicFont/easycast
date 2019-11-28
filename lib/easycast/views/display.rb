@@ -35,6 +35,12 @@ module Easycast
         @display_cast ||= current_scene.cast_at(display_index)
       end
 
+      def assets
+        @assets ||= display_cast.assets.map{|a|
+          { to_html: a.to_html(state) }
+        }
+      end
+
       def current_scene
         walk.current_scene
       end
