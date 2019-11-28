@@ -231,8 +231,16 @@ HTML
         return if @file.exists?
         @file.parent.mkdir_p unless @file.parent.exists?
         puts "Generating asset `#{@file}`"
+        Path("/tmp/easycast").mkdir_p
+        sources = @assets.map{|a|
+          source = "/tmp/easycast/#{a.file.basename}"
+          cmd = %Q{convert -resize 1920x #{a.file} #{source}}
+          puts "#{cmd}"
+          `#{cmd}`
+          source
+        }
         [
-          %Q{convert #{@assets.map{|a| a.file}.join(' ')} -background none -flatten #{@file}},
+          %Q{convert #{sources.join(' ')} -background none -flatten #{@file}},
           %Q{convert -resize 1920x #{@file} #{@file}}
         ].each do |cmd|
           puts "#{cmd}"
