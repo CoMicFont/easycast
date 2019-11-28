@@ -3,7 +3,7 @@ Q3D.gui = {
   type: "dat-gui",
 
   parameters: {
-    lyr: {},
+    lyr: [],
     cp: {
       c: "#ffffff",
       d: 0,
@@ -24,25 +24,25 @@ Q3D.gui = {
     this.gui.domElement.parentElement.style.zIndex = 1000;   // display the panel on the front of labels
     if (setupDefaultItems === undefined || setupDefaultItems == true) {
       this.addLayersFolder();
-      this.customPlaneFolder = this.gui.addFolder('Custom Plane');
+      //this.customPlaneFolder = this.gui.addFolder('Custom Plane');
       if (Q3D.isTouchDevice) this.addCommandsFolder();
-      this.addHelpButton();
+      //this.addHelpButton();
     }
   },
 
   addLayersFolder: function () {
     var mapLayers = Q3D.application.scene.mapLayers;
     var parameters = this.parameters;
-    var visibleChanged = function (value) { mapLayers[this.object.i].visible = value; };
-    var opacityChanged = function (value) { mapLayers[this.object.i].opacity = value; };
+    var visibleChanged = function (value) { mapLayers[this.object.i].setVisible(value); };
+    var opacityChanged = function (value) { mapLayers[this.object.i].setOpacity(value); };
 
-    var layer, layersFolder = this.gui.addFolder('Layers');
+    var layer, layersFolder = this.gui;
     for (var layerId in mapLayers) {
       layer = mapLayers[layerId];
+      console.log(layerId, layer);
       parameters.lyr[layerId] = {i: layerId, v: layer.visible, o: layer.opacity};
-      var folder = layersFolder.addFolder(layer.properties.name);
-      folder.add(parameters.lyr[layerId], 'v').name('Visible').onChange(visibleChanged);
-      folder.add(parameters.lyr[layerId], 'o').min(0).max(1).name('Opacity').onChange(opacityChanged);
+      layersFolder.add(parameters.lyr[layerId], 'v').name(layer.properties.name).onChange(visibleChanged);
+      //folder.add(parameters.lyr[layerId], 'o').min(0).max(1).name('Opacity').onChange(opacityChanged);
     }
   },
 
