@@ -23,6 +23,7 @@ module Easycast
           pause : Boolean
           play  : Boolean
         }
+        walk_on_end : Boolean
       }
 
       Gallery = {

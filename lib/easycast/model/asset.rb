@@ -7,6 +7,10 @@ module Easycast
   #
   class Asset
 
+    def unique_id
+      @unique_id ||= SecureRandom.uuid
+    end
+
     def self.for(path, config)
       case path
       when /.html$/  then Asset::Html.new(path, config)
@@ -104,7 +108,24 @@ module Easycast
         video_options = cast.videos || config.videos
         mode = state.scheduler.paused? ? :pause : :play
         loop = !!video_options[:loop][mode] ? "loop" : ""
-        %Q{<video playsinline autoplay muted #{loop} source style="height: 100%" src="/#{@path}" type="#{video_type}">This browser does not support the video tag.</video>}
+        walk_on_end = video_options[:walk_on_end]
+        tag = %Q{
+          <video id="#{unique_id}" playsinline autoplay muted #{loop} source style="height: 100%" src="/#{@path}" type="#{video_type}">This browser does not support the video tag.</video>
+        }
+        if walk_on_end
+          tag += %Q{
+            <script type='text/javascript'>
+              document.getElementById('#{unique_id}').addEventListener('ended', function() {
+                $.ajax({
+                  url: "/walk/next",
+                  method: 'POST',
+                  data: {}
+                });
+              },false);
+            </script>
+          }
+        end
+        tag
       end
 
       def all_resources
@@ -156,7 +177,6 @@ module Easycast
 
       def initialize(arg, config)
         super(config)
-        @id = SecureRandom.uuid
         @options = arg[:options] || { interval: 2 }
         @assets  = arg[:images].map { |i| Asset.for(i, config) }
         @target = config.folder/"assets/galleries"
@@ -174,9 +194,9 @@ module Easycast
       def to_html(state, cast)
         interval = @options[:interval] * 1000
         <<-HTML
-<div id="#{@id}" class="gallery">
+<div id="#{unique_id}" class="gallery">
   <img />
-  <script>jQuery(function(){ installGallery("#{@id}", #{@generated.to_json}, #{interval}); });</script>
+  <script>jQuery(function(){ installGallery("#{unique_id}", #{@generated.to_json}, #{interval}); });</script>
 </div>
 HTML
       end
