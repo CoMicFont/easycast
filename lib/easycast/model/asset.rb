@@ -20,6 +20,7 @@ module Easycast
         case path[:type]
         when 'gallery' then Asset::Gallery.new(path, config)
         when 'layers'  then Asset::Layers.new(path, config)
+        when 'qgis'    then Asset::QGIS.new(path, config)
         else raise ArgumentError, "Unknown type `#{path[:type]}`"
         end
       else
@@ -241,6 +242,34 @@ HTML
       end
 
     end # class Layers
+
+    class QGIS < Asset
+
+      def initialize(arg, config)
+        super(config)
+        @options = arg[:options] || { }
+        @home  = arg[:home]
+        @assets  = [Asset.for(@home)]
+        @sha = Digest::SHA1.hexdigest(@assets.map{|a| a.path }.join('/'))
+        @path = @home
+        @file = SCENES_FOLDER/("assets/#{@path}")
+      end
+
+      def ensure!
+        @assets.each do |a|
+          a.ensure!
+        end
+      end
+
+      def all_resources
+        []
+      end
+
+      def to_html
+        "<article>" + file_contents + "</article>"
+      end
+
+    end # class QGIS
 
   end # class Asset
 end # module Easycast
