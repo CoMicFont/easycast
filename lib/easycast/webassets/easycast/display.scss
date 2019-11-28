@@ -13,6 +13,7 @@ body.display {
     top: 0;
     width: auto;
     height: 100%;
+    animation: imageAnimation 1s linear;
   }
   article {
     padding: 2%;
@@ -22,4 +23,15 @@ body.display {
   &.with-remote {
     padding-left: 45px;
   }
+}
+
+@keyframes imageAnimation {
+    0% {
+      opacity: 0;
+      animation-timing-function: ease-in;
+    }
+    100% {
+      opacity: 1;
+      animation-timing-function: ease-out;
+    }
 }
