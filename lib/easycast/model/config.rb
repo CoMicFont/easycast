@@ -13,6 +13,18 @@ module Easycast
         ...
       }
 
+      AnimationOption = {
+        frequency : String
+        autoplay  : Boolean
+      }
+
+      VideoOptions = {
+        loop: {
+          pause : Boolean
+          play  : Boolean
+        }
+      }
+
       Gallery = {
         type    : String( s | s == "gallery" )
         options :? AssetOptions
@@ -26,9 +38,10 @@ module Easycast
       }
 
       Cast = {
-        display: Integer
-        remote: Boolean
-        assets: [AssetPath|Gallery|Layers]
+        display : Integer
+        remote  : Boolean
+        videos  :? VideoOptions
+        assets  : [AssetPath|Gallery|Layers]
       }
 
       Scene.Id = String
@@ -52,16 +65,8 @@ module Easycast
       {
         scenes    :  [Scene]
         nodes     :  [Node]
-        animation :? {
-          frequency : String
-          autoplay  : Boolean
-        }
-        videos:? {
-          loop: {
-            play: Boolean
-            pause: Boolean
-          }
-        }
+        animation :? AnimationOption
+        videos    :? VideoOptions
       }
     FIO
 
@@ -82,7 +87,7 @@ module Easycast
     # Loads a Scenes instance from a given folder.
     #
     # @raises ScenesError if something goes wrong with the folder or its
-    #         structure. 
+    #         structure.
     #
     def self.load(folder)
       raise ConfigError, "Scenes folder does not exist `#{folder}`" unless folder.directory?

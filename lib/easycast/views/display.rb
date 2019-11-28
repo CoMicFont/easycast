@@ -37,7 +37,7 @@ module Easycast
 
       def assets
         @assets ||= display_cast.assets.map{|a|
-          { to_html: a.to_html(state) }
+          { to_html: a.to_html(state, display_cast) }
         }
       end
 

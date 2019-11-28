@@ -31,7 +31,7 @@ module Easycast
       []
     end
 
-    def to_html(state)
+    def to_html(state, cast)
       raise NotImplementedError
     end
 
@@ -60,7 +60,7 @@ module Easycast
 
     class Html < SimpleFile
 
-      def to_html(state)
+      def to_html(state, cast)
         "<article>" + file_contents + "</article>"
       end
 
@@ -68,7 +68,7 @@ module Easycast
 
     class Svg < SimpleFile
 
-      def to_html(state)
+      def to_html(state, cast)
         file_contents
       end
 
@@ -76,7 +76,7 @@ module Easycast
 
     class Png < SimpleFile
 
-      def to_html(state)
+      def to_html(state, cast)
         %Q{<img src="/#{@path}">}
       end
 
@@ -88,7 +88,7 @@ module Easycast
 
     class Jpg < SimpleFile
 
-      def to_html(state)
+      def to_html(state, cast)
         %Q{<img src="/#{@path}">}
       end
 
@@ -100,8 +100,8 @@ module Easycast
 
     class Video < SimpleFile
 
-      def to_html(state)
-        video_options = config.videos
+      def to_html(state, cast)
+        video_options = cast.videos || config.videos
         mode = state.scheduler.paused? ? :pause : :play
         loop = !!video_options[:loop][mode] ? "loop" : ""
         %Q{<video playsinline autoplay muted #{loop} source style="height: 100%" src="/#{@path}" type="#{video_type}">This browser does not support the video tag.</video>}
@@ -171,7 +171,7 @@ module Easycast
         @generated.map{|a| { path: a, as: "image" } }
       end
 
-      def to_html(state)
+      def to_html(state, cast)
         interval = @options[:interval] * 1000
         <<-HTML
 <div id="#{@id}" class="gallery">
@@ -224,7 +224,7 @@ HTML
         [ { path: "/#{@path}", as: "image" } ]
       end
 
-      def to_html(state)
+      def to_html(state, cast)
         %Q{<img src="/#{@path}">}
       end
 
