@@ -17,6 +17,8 @@ if [ "$_IP" ]; then
   printf "My IP address is %s\n" "$_IP"
 fi
 
+iptables-restore < /etc/iptables.ipv4.nat
+
 cd /home/pi/easycast
 /usr/local/bin/bundle exec thin --address 0.0.0.0 --port 80 --threaded --threadpool-size 5 start
 
