@@ -45,30 +45,36 @@ module Easycast
     # to choose a display
     #
     get "/" do
-      content_type :html
-      serve Views::Home.new(settings.config, get_state)
-    rescue => ex
-      serve_error(ex)
+      begin
+        content_type :html
+        serve Views::Home.new(settings.config, get_state)
+      rescue => ex
+        serve_error(ex)
+      end
     end
 
     ##
     ## Returns the .html file of the n-th display
     ##
     get "/display/:i" do |i|
-      content_type :html
-      serve Views::Display.new(settings.config, get_state, i.to_i)
-    rescue => ex
-      serve_error(ex)
+      begin
+        content_type :html
+        serve Views::Display.new(settings.config, get_state, i.to_i)
+      rescue => ex
+        serve_error(ex)
+      end
     end
 
     ##
     ## Returns the .html file of the remote
     ##
     get '/remote' do
-      content_type :html
-      serve Views::Remote.new(settings.config, get_state)
-    rescue => ex
-      serve_error(ex)
+      begin
+        content_type :html
+        serve Views::Remote.new(settings.config, get_state)
+      rescue => ex
+        serve_error(ex)
+      end
     end
 
     ##
