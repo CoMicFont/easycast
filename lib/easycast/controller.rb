@@ -28,7 +28,7 @@ module Easycast
       end
       scheduler.pause unless config.animation[:autoplay]
       # mark that everything is fine!
-      puts "Started successfull on #{folder}"
+      puts "Config successfull (re)loaded #{folder}"
       set :load_error, nil
     rescue => ex
       set :config, nil
@@ -45,36 +45,24 @@ module Easycast
     # to choose a display
     #
     get "/" do
-      begin
-        content_type :html
-        serve Views::Home.new(settings.config, get_state)
-      rescue => ex
-        serve_error(ex)
-      end
+      content_type :html
+      serve Views::Home.new(settings.config, get_state)
     end
 
     ##
     ## Returns the .html file of the n-th display
     ##
     get "/display/:i" do |i|
-      begin
-        content_type :html
-        serve Views::Display.new(settings.config, get_state, i.to_i)
-      rescue => ex
-        serve_error(ex)
-      end
+      content_type :html
+      serve Views::Display.new(settings.config, get_state, i.to_i)
     end
 
     ##
     ## Returns the .html file of the remote
     ##
     get '/remote' do
-      begin
-        content_type :html
-        serve Views::Remote.new(settings.config, get_state)
-      rescue => ex
-        serve_error(ex)
-      end
+      content_type :html
+      serve Views::Remote.new(settings.config, get_state)
     end
 
     ##
@@ -230,7 +218,7 @@ module Easycast
   private
 
     def serve(view)
-      settings.load_config if has_error?
+      settings.load_config if has_error? || settings.config.outdated?
       if has_error?
         serve_error
       elsif env['HTTP_ACCEPT'] == "application/vnd.easycast.display+html"
@@ -238,6 +226,8 @@ module Easycast
       else
         Views::Layout.new(view).render
       end
+    rescue => ex
+      serve_error(ex)
     end
 
     def serve_error(ex = settings.load_error)

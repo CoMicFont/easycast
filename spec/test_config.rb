@@ -92,5 +92,17 @@ module Easycast
 
     end
 
+    describe "Change control" do
+
+      let(:config){ Config.load(Path.dir/"fixtures") }
+
+      it 'works as expected' do
+        expect(config.outdated?).to eql(false)
+        (Path.dir/"fixtures/scenes.yml").touch
+        expect(config.outdated?).to eql(true)
+      end
+
+    end
+
   end
 end

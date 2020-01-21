@@ -71,17 +71,19 @@ module Easycast
       }
     FIO
 
-    def initialize(data, folder)
-      @folder = folder
+    def initialize(data, scenes_file)
+      @scenes_file = scenes_file
+      @folder = scenes_file && scenes_file.parent
+      @saved_mtime = scenes_file && scenes_file.mtime
       ensure_animation!(data)
       super(data)
       generate_node_indices!(data[:nodes], 0)
     end
-    attr_reader :folder
+    attr_reader :scenes_file, :saved_mtime, :folder
 
     # Dresses some data as a config object
     def self.dress(data, world = {})
-      new SCHEMA.dress(data), world[:folder]
+      new SCHEMA.dress(data), world[:scenes_file]
     end
 
     #
@@ -94,9 +96,13 @@ module Easycast
       raise ConfigError, "Scenes folder does not exist `#{folder}`" unless folder.directory?
       yml = folder/"scenes.yml"
       raise ConfigError, "Missing scenes index file `#{yml}`" unless yml.file?
-      dress(yml.load, folder: folder)
+      dress(yml.load, scenes_file: yml)
     rescue Finitio::Error => ex
       raise ConfigError, "Corrupted scenes index file\n#{ex.root_cause.message}"
+    end
+
+    def outdated?
+      scenes_file && scenes_file.mtime > saved_mtime
     end
 
     def scene_by_id(id)
