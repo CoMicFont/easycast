@@ -37,7 +37,7 @@ module Easycast
   Mustache.template_path = ROOT_FOLDER/("lib")
 
   # Whether we want sinatra to reload everytime
-  DEVELOPMENT_MODE = not(ENV['EASYCAST_DEVELOPMENT_MODE'].nil?)
+  DEVELOPMENT_MODE = (ENV['RACK_ENV'].to_s =~ /^devel/i)
 
 end
 require_relative 'easycast/error'
