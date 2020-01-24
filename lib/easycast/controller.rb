@@ -20,13 +20,12 @@ module Easycast
       # load the config and check it
       set :config, Config.load(folder).check!.ensure_assets!
       # initialize the walk
-      set :walk, Walk.new(config)
-      # create the scheduler and configure it
-      set :scheduler, Rufus::Scheduler.new
-      scheduler.interval(config.animation[:frequency]) do
-        set_walk walk.next(true)
+      set :tour, FullTour.new(config)
+      # install scheduler and configure it
+      tour.interval(config.animation[:frequency]) do
+        set_tour tour.next(true)
       end
-      scheduler.pause unless config.animation[:autoplay]
+      tour.pause unless config.animation[:autoplay]
       # mark that everything is fine!
       puts "Config successfull (re)loaded #{folder}"
       set :load_error, nil
@@ -46,7 +45,7 @@ module Easycast
     #
     get "/" do
       content_type :html
-      serve Views::Home.new(settings.config, get_state)
+      serve Views::Home.new(settings.config, settings.tour.to_state)
     end
 
     ##
@@ -54,7 +53,7 @@ module Easycast
     ##
     get "/display/:i" do |i|
       content_type :html
-      serve Views::Display.new(settings.config, get_state, i.to_i)
+      serve Views::Display.new(settings.config, settings.tour.to_state, i.to_i)
     end
 
     ##
@@ -62,7 +61,7 @@ module Easycast
     ##
     get '/remote' do
       content_type :html
-      serve Views::Remote.new(settings.config, get_state)
+      serve Views::Remote.new(settings.config, settings.tour.to_state)
     end
 
     ##
@@ -96,93 +95,70 @@ module Easycast
   ### Walk
 
     ##
-    ## Updates the current walk state to the i-th node
+    ## Updates the current walk tour to the i-th node
     ##
-    post '/walk/state/:i' do |i|
-      set_walk settings.walk.jump(i.to_i)
+    post '/tour/jump/:i' do |i|
+      set_tour settings.tour.jump(i.to_i)
       serve_nothing
     end
 
     ##
-    ## Moves the current walk state to the next scene
+    ## Moves the current walk tour to the next scene
     ##
-    post '/walk/next' do
-      set_walk settings.walk.next
+    post '/tour/next' do
+      set_tour settings.tour.next
       serve_nothing
     end
 
     ##
-    ## Moves the current walk state to the previous scene
+    ## Moves the current walk tour to the previous scene
     ##
-    post '/walk/previous' do
-      set_walk settings.walk.previous
+    post '/tour/previous' do
+      set_tour settings.tour.previous
       serve_nothing
     end
 
   ### Scheduler
 
-    def scheduler
-      settings.scheduler
-    end
-
     post '/scheduler/pause' do
-      unless scheduler.paused?
-        settings.state_change{ scheduler.pause }
-      end
+      state_change{ settings.tour.pause } unless settings.tour.paused?
       204
     end
 
     post '/scheduler/resume' do
-      if scheduler.paused?
-        settings.state_change{ scheduler.resume }
-      end
+      state_change{ settings.tour.resume } if settings.tour.paused?
       204
     end
 
     post '/scheduler/toggle' do
-      if scheduler.paused?
-        settings.state_change{ scheduler.resume }
+      if settings.tour.paused?
+        state_change{ settings.tour.resume }
         201
       else
-        settings.state_change{ scheduler.pause }
+        state_change{ settings.tour.pause }
         204
       end
     end
 
-  ### Controller state
-
-    def self.get_external_state
-      {
-        walkIndex: self.walk.state,
-        paused: self.scheduler.paused?
-      }
-    end
-
-    def get_external_state
-      settings.get_external_state
-    end
-
-    def get_state
-      OpenStruct.new({
-        config: settings.config,
-        walk: settings.walk,
-        scheduler: settings.scheduler
-      })
-    end
+  ### Controller tour
 
     def self.state_change(&bl)
-      old_ext_state = get_external_state
+      old_ext_state = settings.tour.to_external_state
       bl.call
-      new_ext_state = get_external_state
+      new_ext_state = settings.tour.to_external_state
       notify(new_ext_state) if (old_ext_state != new_ext_state)
     end
 
-    def self.set_walk(walk)
-      state_change{ settings.walk = walk }
+    def state_change(*args, &bl)
+      settings.state_change(*args, &bl)
     end
 
-    def set_walk(walk)
-      settings.set_walk(walk)
+    def self.set_tour(tour)
+      state_change{ settings.tour = tour }
+    end
+
+    def set_tour(*args, &bl)
+      settings.set_tour(*args, &bl)
     end
 
     ##
@@ -191,7 +167,7 @@ module Easycast
     ##
     get '/state' do
       content_type :json
-      get_external_state.to_json
+      settings.tour.to_external_state.to_json
     end
 
   ### Streaming approach

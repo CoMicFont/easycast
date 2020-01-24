@@ -63,6 +63,49 @@ module Easycast
 
     end
 
+    describe "is_at_begin?" do
+
+      it "returns true at beginning" do
+        expect(walk.is_at_begin?).to eql(true)
+      end
+
+      it "returns false after next" do
+        expect(walk.next.is_at_begin?).to eql(false)
+      end
+
+      it "returns false after previous (on the example at least)" do
+        expect(walk.previous.is_at_begin?).to eql(false)
+      end
+    end
+
+    describe "is_at_end?" do
+
+      it "returns false at beginning" do
+        expect(walk.is_at_end?).to eql(false)
+      end
+
+      it "returns false after next (on the example at least)" do
+        expect(walk.next.is_at_end?).to eql(false)
+      end
+
+      it "returns true after previous" do
+        expect(walk.previous.is_at_end?).to eql(true)
+      end
+    end
+
+    describe 'home' do
+
+      it 'returns another walk' do
+        expect(walk.home).to be_a(Walk)
+      end
+
+      it 'goes to home' do
+        home = walk.next.next.home
+        expect(home.current_scene.name).to eql("Intro 1")
+      end
+
+    end
+
     describe "manual next" do
 
       it 'returns another walk' do
@@ -206,4 +249,3 @@ module Easycast
 
   end
 end
-

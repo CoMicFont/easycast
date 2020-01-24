@@ -117,7 +117,7 @@ module Easycast
             <script type='text/javascript'>
               document.getElementById('#{unique_id}').addEventListener('ended', function() {
                 $.ajax({
-                  url: "/walk/next",
+                  url: "/tour/next",
                   method: 'POST',
                   data: {}
                 });

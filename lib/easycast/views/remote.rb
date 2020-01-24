@@ -18,11 +18,11 @@ module Easycast
       end
 
       def previous_href
-        "/walk/previous"
+        "/tour/previous"
       end
 
       def next_href
-        "/walk/next"
+        "/tour/next"
       end
 
       def scheduler_toggle_href

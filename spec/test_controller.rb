@@ -52,20 +52,20 @@ module Easycast
 
     end
 
-    describe '/walk/...' do
+    describe '/tour/...' do
 
       it 'POST lets specify the current node index' do
-        post '/walk/state/1'
+        post '/tour/jump/1'
         expect(last_response.status).to eql(204)
       end
 
       it 'POST next moves to the next node' do
-        post '/walk/next'
+        post '/tour/next'
         expect(last_response.status).to eql(204)
       end
 
       it 'POST previous moves to the previous node' do
-        post '/walk/previous'
+        post '/tour/previous'
         expect(last_response.status).to eql(204)
       end
 
