@@ -38,7 +38,7 @@ module Easycast
 
     def to_external_state
       {
-        walkIndex: walk.state,
+        walkIndex: walk.current_node[:index],
         paused: paused?
       }
     end
@@ -46,3 +46,4 @@ module Easycast
   end # class Tour
 end # module Easycast
 require_relative 'tour/full_tour'
+require_relative 'tour/sub_tour'

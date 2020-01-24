@@ -1,0 +1,29 @@
+body.doors {
+  padding: 2%;
+  ul.doors {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    > li {
+      box-sizing: border-box;
+      width: 47%;
+      padding: 50px 10px;
+      margin: 5px;
+      border: 3px solid #333;
+      border-radius: 10px;
+      > a {
+        border: none;
+        font-size: 130%;
+        text-align: center;
+      }
+      &:hover {
+        cursor: pointer;
+      }
+    }
+    > li.active {
+      background: #333;
+      color: white;
+    }
+  }
+}

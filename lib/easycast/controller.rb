@@ -65,6 +65,14 @@ module Easycast
     end
 
     ##
+    ## Returns the .html file of the doors
+    ##
+    get '/doors' do
+      content_type :html
+      serve Views::Doors.new(settings.config, settings.tour.to_state)
+    end
+
+    ##
     ## Force all displays to refresh
     ##
     post '/refresh' do
@@ -93,6 +101,14 @@ module Easycast
     end
 
   ### Walk
+
+    ##
+    ## Start a subtour on the i-th node
+    ##
+    post '/tour/subtour/:i' do |i|
+      set_tour settings.tour.sub_tour(i.to_i)
+      serve_nothing
+    end
 
     ##
     ## Updates the current walk tour to the i-th node
@@ -229,4 +245,5 @@ require_relative 'views/partial'
 require_relative 'views/home'
 require_relative 'views/display'
 require_relative 'views/remote'
+require_relative 'views/doors'
 require_relative 'views/error'

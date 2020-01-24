@@ -8,7 +8,17 @@ module Easycast
     end
     attr_reader :config, :walk, :scheduler
 
+    # subtour handling
+
+    def sub_tour(i)
+      SubTour.new(self, @walk.node_at(i)).resume
+    end
+
     # walk handling
+
+    def home(*args)
+      FullTour.new(@config, @walk.home(*args), @scheduler)
+    end
 
     def next(*args)
       FullTour.new(@config, @walk.next(*args), @scheduler)

@@ -22,8 +22,6 @@ module Easycast
       @end_state = end_state || find_previous(0)
       raise "illegal state" unless @state
       @repeat = repeat || @linearization[@state][:repeat] || 1
-      # Class invariant, the current state is the index of the current node
-      raise "illegal state" unless @linearization[@state][:index] == @state
     end
     attr_reader :config, :linearization, :state
 
@@ -42,15 +40,19 @@ module Easycast
 
     # Returns the scene corresponding to the current Walk state
     def current_scene
-      config.scene_by_id(linearization[state][:scene])
+      config.scene_by_id(current_node[:scene])
+    end
+
+    def current_node
+      linearization[state]
     end
 
     def is_at_begin?
-      @state == @start_state
+      @state == @start_state && @repeat == (linearization[@state][:repeat] || 1)
     end
 
     def is_at_end?
-      @state == @end_state
+      @state == @end_state && @repeat == 1
     end
 
     def home
@@ -82,6 +84,12 @@ module Easycast
       target_state = find_next((nth-1) % linearization.size)
       repeat = linearization[target_state][:repeat]
       Walk.new(config, linearization, target_state, repeat, @start_state, @end_state)
+    end
+
+  public
+
+    def node_at(i)
+      linearization[i]
     end
 
   private

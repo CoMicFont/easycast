@@ -42,6 +42,11 @@ module Easycast
       it_behaves_like 'An end-user page'
     end
 
+    describe "GET /doors" do
+      subject { "/doors" }
+      it_behaves_like 'An end-user page'
+    end
+
     describe 'GET /state' do
 
       it 'returns the current controller state' do
@@ -56,6 +61,11 @@ module Easycast
 
       it 'POST lets specify the current node index' do
         post '/tour/jump/1'
+        expect(last_response.status).to eql(204)
+      end
+
+      it 'POST lets start a sub tour on a node' do
+        post '/tour/subtour/0'
         expect(last_response.status).to eql(204)
       end
 
