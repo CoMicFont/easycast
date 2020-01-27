@@ -23,8 +23,13 @@ module Easycast
         display_cast[:remote]
       end
 
+      def scene_id
+        "scene-#{current_scene.id}"
+      end
+
       def body_class
-        with_remote ? "display with-remote" : "display without-remote"
+        with_remote ? "with-remote" : "without-remote"
+        "display display-#{display_index} #{with_remote}"
       end
 
       def remote

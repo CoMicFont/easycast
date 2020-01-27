@@ -1,8 +1,10 @@
-{{#assets}}
-<div class="asset">
-  {{{to_html}}}
+<div class="scene" id="{{scene_id}}">
+  {{#assets}}
+  <div class="asset">
+    {{{to_html}}}
+  </div>
+  {{/assets}}
 </div>
-{{/assets}}
 
 {{#with_remote}}
 <div id="menu" class="menu">
