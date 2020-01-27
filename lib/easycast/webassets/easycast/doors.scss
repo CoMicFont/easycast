@@ -20,6 +20,9 @@ body.doors {
       &:hover {
         cursor: pointer;
       }
+      &:first-child {
+        display: none;
+      }
     }
     > li.active {
       background: #333;
