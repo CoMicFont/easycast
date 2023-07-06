@@ -1,12 +1,17 @@
 namespace :test do
-
   require "rspec/core/rake_task"
 
-  desc "Run unit tests"
+  tests = []
+
+  desc "Runs unit tests"
   RSpec::Core::RakeTask.new(:unit) do |t|
     t.pattern = "spec/**/test_*.rb"
-    t.rspec_opts = ["--color", "--backtrace", "--fail-fast"]
+    t.rspec_opts = ["-Ilib", "-Ispec", "--color", "--backtrace", "--format=progress"]
   end
+  tests << :unit
 
+  task :all => tests
 end
-task :test => [:'test:unit']
+
+desc "Runs all tests"
+task :test => :'test:all'

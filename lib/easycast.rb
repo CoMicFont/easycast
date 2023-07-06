@@ -23,7 +23,7 @@ module Easycast
 
   # Main scenes folder
   SCENES_FOLDER = if folder = ENV['EASYCAST_SCENES_FOLDER']
-    folder
+    Path(folder)
   elsif (folder = ROOT_FOLDER/("scenes")).directory?
     folder
   else

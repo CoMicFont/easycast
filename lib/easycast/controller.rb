@@ -30,6 +30,8 @@ module Easycast
       puts "Config successfull (re)loaded #{folder}"
       set :load_error, nil
     rescue => ex
+      puts ex.message
+      puts ex.backtrace.join("\n")
       set :config, nil
       set :walk, nil
       set :scheduler, nil

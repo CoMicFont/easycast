@@ -98,7 +98,7 @@ module Easycast
       raise ConfigError, "Missing scenes index file `#{yml}`" unless yml.file?
       dress(yml.load, scenes_file: yml)
     rescue Finitio::Error => ex
-      raise ConfigError, "Corrupted scenes index file\n#{ex.root_cause.message}"
+      raise ConfigError, "Corrupted scenes index file\n#{ex.root_cause.message} (#{ex.root_cause&.location})"
     end
 
     def outdated?
@@ -111,9 +111,16 @@ module Easycast
     end
 
     def ensure_assets!
+      error = nil
       _scenes.each do |s|
-        s.ensure_assets!
+        begin
+          s.ensure_assets!
+        rescue => ex
+          error ||= ex
+          puts "Wrong scene #{s[:id]}: #{ex.message}"
+        end
       end
+      raise error if error
       self
     end
 

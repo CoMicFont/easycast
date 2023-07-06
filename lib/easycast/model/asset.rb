@@ -57,7 +57,7 @@ module Easycast
       end
 
       def ensure!
-        raise ConfigError, "No such file `#{path}`" unless file.exists?
+        raise ConfigError, "No such file `#{path}` (#{file})" unless file.exists?
       end
 
     end
@@ -218,7 +218,7 @@ HTML
               `#{cmd}`
             end
           end
-          @generated << "/galleries/#{name}.#{a.file.ext}"
+          @generated << "/galleries/#{name}#{a.file.ext}"
         end
       end
 
