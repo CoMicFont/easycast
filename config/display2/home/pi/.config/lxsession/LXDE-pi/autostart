@@ -5,5 +5,5 @@
 @pcmanfm --desktop --profile LXDE-pi
 @xscreensaver -no-splash
 @point-rpi
-@/home/pi/easycast/bin/open-display-2
+@/home/pi/easycast/bin/open-display 2 0,0
 @unclutter -idle 0.1
