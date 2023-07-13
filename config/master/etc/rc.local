@@ -20,6 +20,6 @@ fi
 iptables-restore < /etc/iptables.ipv4.nat
 
 cd /home/pi/easycast
-/usr/local/bin/bundle exec thin --address 0.0.0.0 --port 80 --threaded --threadpool-size 5 start
+/usr/local/bin/bundle exec thin --address 0.0.0.0 --port 8080 --threaded --threadpool-size 5 -e production start
 
 exit 0

@@ -1,2 +1,2 @@
 #!/bin/sh
-sudo bundle exec thin --address 0.0.0.0 --port 80 --threaded --threadpool-size 5 start
+bundle exec thin --address 0.0.0.0 --port 8080 --threaded --threadpool-size 5 -e production start
