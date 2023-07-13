@@ -3,5 +3,4 @@ git remote update
 git reset --hard
 git checkout master
 git reset --hard origin/master
-bundle install
-bundle exec rake assets:compile
+bundle install --path vendor/bundle
