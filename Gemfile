@@ -11,6 +11,7 @@ gem 'sprockets', '~> 3.7'
 gem 'uglifier', '~> 3.1'
 gem 'sass', '~> 3.4'
 gem "rufus-scheduler", "~> 3.9"
+gem "colorize", "~> 1.0"
 gem "tzinfo-data"
 gem "thin"
 
