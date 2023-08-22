@@ -7,8 +7,6 @@
 /.bundle
 /.ruby-uuid
 /tmp
-/public/assets/*.min.css
-/public/assets/*.min.js
 /documentation/assets/galleries
 /documentation/assets/layers
 /vendor

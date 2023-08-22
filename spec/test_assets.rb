@@ -21,10 +21,5 @@ module Easycast
       expect(last_response.status).to eql(200)
     end
 
-    it 'serves the fonts without trouble and allows caching' do
-      get '/fonts/FontAwesome.otf'
-      expect(last_response.status).to eql(200)
-    end
-
   end
 end

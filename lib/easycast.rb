@@ -31,7 +31,10 @@ module Easycast
   end
 
   # Public assets folder
-  WEBASSETS_FOLDER = SCENES_FOLDER/('assets/webassets')
+  PUBLIC_FOLDER = ROOT_FOLDER/('public')
+
+  # Public assets folder
+  WEBASSETS_FOLDER = ROOT_FOLDER/('public/webassets')
 
   # Let mustache know where its templates are
   Mustache.template_path = ROOT_FOLDER/("lib")

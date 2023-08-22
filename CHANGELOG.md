@@ -2,6 +2,11 @@
 
 * Modernize, upgrade all ruby dependencies.
 
+* Assets are now served by a Rack::Static middleward instead of Sprockets
+  in production mode. Webassets are also moved to the public/ folder and
+  provided pre-compiled as part of the release process instead of being
+  located within the scenes and generated on the raspberry itself.
+
 ## 1.7.0 - 2023-01-27
 
 * Add better error handling, for easier start recovery when the scenes

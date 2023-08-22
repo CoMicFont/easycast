@@ -7,10 +7,15 @@ module Easycast
       Easycast::Service
     end
 
-    it 'serves the webassets without trouble' do
-      get '/webassets/easycast.js'
+    it 'serves the static files without trouble' do
+      get '/fonts/fontawesome-webfont.eot'
       expect(last_response.status).to eql(200)
-      expect(last_response).to allow_cache(['ETag'])
+    end
+
+    it 'serves the webassets without trouble' do
+      get "/webassets/easycast-#{VERSION}.min.js"
+      expect(last_response.status).to eql(200)
+      expect(last_response).to allow_cache(['Last-Modified'])
     end
 
     it 'serves the home page without trouble' do

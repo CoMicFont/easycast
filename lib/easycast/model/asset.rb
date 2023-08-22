@@ -7,6 +7,8 @@ module Easycast
   #
   class Asset
 
+    ASSETS_PREFIX = "/assets"
+
     def unique_id
       @unique_id ||= SecureRandom.uuid
     end
@@ -81,7 +83,7 @@ module Easycast
     class Png < SimpleFile
 
       def to_html(state, cast)
-        %Q{<img src="/#{@path}">}
+        %Q{<img src="#{ASSETS_PREFIX}/#{@path}">}
       end
 
       def all_resources
@@ -93,7 +95,7 @@ module Easycast
     class Jpg < SimpleFile
 
       def to_html(state, cast)
-        %Q{<img src="/#{@path}">}
+        %Q{<img src="#{ASSETS_PREFIX}/#{@path}">}
       end
 
       def all_resources
@@ -110,7 +112,7 @@ module Easycast
         loop = !!video_options[:loop][mode] ? "loop" : ""
         walk_on_end = video_options[:walk_on_end]
         tag = %Q{
-          <video id="#{unique_id}" playsinline autoplay muted #{loop} source style="height: 100%" src="/#{@path}" type="#{video_type}">This browser does not support the video tag.</video>
+          <video id="#{unique_id}" playsinline autoplay muted #{loop} source style="height: 100%" src="#{ASSETS_PREFIX}/#{@path}" type="#{video_type}">This browser does not support the video tag.</video>
         }
         if walk_on_end
           tag += %Q{
@@ -218,7 +220,7 @@ HTML
               `#{cmd}`
             end
           end
-          @generated << "/galleries/#{name}#{a.file.ext}"
+          @generated << "#{ASSETS_PREFIX}/galleries/#{name}#{a.file.ext}"
         end
       end
 
@@ -245,7 +247,7 @@ HTML
       end
 
       def to_html(state, cast)
-        %Q{<img src="/#{@path}">}
+        %Q{<img src="#{ASSETS_PREFIX}/#{@path}">}
       end
 
     private

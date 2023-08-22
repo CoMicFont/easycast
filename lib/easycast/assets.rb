@@ -5,8 +5,6 @@ module Easycast
 
     ### Assets handling
 
-    set :public_folder, SCENES_FOLDER/("assets")
-
     SprocketsAssets = Sprockets::Environment.new
     SprocketsAssets.append_path Path.dir/('webassets')
     SprocketsAssets.append_path SCENES_FOLDER/("assets")
@@ -18,10 +16,6 @@ module Easycast
     get "/webassets/*" do
       env["PATH_INFO"].sub!("/webassets", "")
       SprocketsAssets.call(env)
-    end
-
-    get "/fonts/:font" do |f|
-      send_file Path.dir/"webassets/fonts"/f
     end
 
   end # class Assets
