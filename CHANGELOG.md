@@ -7,6 +7,13 @@
   provided pre-compiled as part of the release process instead of being
   located within the scenes and generated on the raspberry itself.
 
+* The WiFI configuration is changed to something more stable on Raspberry pi4.
+  The 5Ghz band is used instead of 2.4Ghz since experience seems to confirm that
+  Wifi+HDMI+USB is unstable with 2.4Ghz.
+
+  https://indilib.org/forum/general/6576-pi4-usb3-and-wireless-2-4ghz-interference.html#50509
+
+
 ## 1.7.0 - 2023-01-27
 
 * Add better error handling, for easier start recovery when the scenes
