@@ -1,9 +1,0 @@
-@xset s noblank
-@xset s off
-@xset -dpms
-@lxpanel --profile LXDE-pi
-@pcmanfm --desktop --profile LXDE-pi
-@xscreensaver -no-splash
-@point-rpi
-@/home/pi/easycast/bin/open-display 1 0,0
-@unclutter -idle 0.1

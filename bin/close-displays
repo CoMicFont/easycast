@@ -1,0 +1,7 @@
+#!/bin/sh
+export DISPLAY=":0"
+for wid in $(xdotool search --onlyvisible --class chromium)
+do
+  xdotool windowactivate ${wid}
+  xdotool key alt+F4
+done

@@ -1,0 +1,9 @@
+#!/bin/sh
+export IFS=";"
+
+for display in $EASYCAST_DISPLAYS;
+do
+  num=$(echo $display | cut -f1 -d'-')
+  position=$(echo $display | cut -f2 -d'-')
+  /bin/sh $(dirname $0)/open-display $num $position &
+done

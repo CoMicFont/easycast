@@ -78,21 +78,21 @@ module Easycast
     ## Force all displays to refresh
     ##
     post '/refresh' do
-      distant_exec("refresh-display")
+      distant_exec("refresh-displays")
     end
 
     ##
     ## Force all displays to restart
     ##
     post '/restart' do
-      distant_exec("restart-display")
+      distant_exec("restart-displays")
     end
 
     ##
     ## Force all displays to restart
     ##
     post '/reboot' do
-      distant_exec("reboot-display")
+      distant_exec("reboot")
     end
 
     def distant_exec(cmd)
