@@ -6,3 +6,21 @@ nodes: []
 animation:
   frequency: 1s
   autoplay: false
+
+stations:
+- name: master
+  roles:
+  - master
+  - displays
+  displays:
+  - identifier: 0
+    size: 1920x1080
+    position: "0,0"
+- name: slave
+  roles:
+  - master
+  - displays
+  displays:
+  - identifier: 1
+    size: 1920x1080
+    position: "1920,0"

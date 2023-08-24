@@ -14,9 +14,7 @@ module Easycast
       end
 
       def displays
-        config.each_station.map {|station|
-          station[:displays] || []
-        }.flatten
+        config.each_display
       end
 
     end # class Home

@@ -130,6 +130,20 @@ module Easycast
       _stations.each(&block)
     end
 
+    def each_display
+      return to_enum(:each_display) unless block_given?
+
+      each_station do |station|
+        (station.displays || []).each do |display|
+          yield display
+        end
+      end
+    end
+
+    def each_display_for(station, &block)
+      (station_by_name(station)[:displays] || []).each(&block)
+    end
+
     def station_by_name(name)
       @stations_by_name ||= _stations.each_with_object({}){|s,h| h[s[:name]] = s }
       @stations_by_name[name]

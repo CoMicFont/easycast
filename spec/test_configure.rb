@@ -2,6 +2,12 @@ require 'spec_helper'
 module Easycast
   describe Configure do
 
+    class Configure
+      def fail!(msg)
+        raise msg
+      end
+    end
+
     let(:fixtures) do
       Path.dir/"fixtures"/"configure"
     end
@@ -80,6 +86,44 @@ module Easycast
         OUT
         expect(target/"empty"/"etc"/"a_file.conf").to exist
         expect((target/"empty"/"etc"/"a_file.conf").read).to eql("master one\n")
+      end
+    end
+
+    describe "--configure with templates" do
+      let(:configure) do
+        Configure.new(["--configure=slave", "--no-dry-run", "--no-color", "tpl"], {
+          source: fixtures,
+          target: target/"empty",
+          scenes_folder: fixtures.parent,
+        })
+      end
+
+      before(:each) do
+        (target/"empty").rm_rf
+        (target/"empty").mkdir_p
+      end
+
+      after(:each) do
+        (target/"empty").rm_rf
+        (target/"empty").mkdir_p
+      end
+
+      let(:stdout) do
+        StringIO.new
+      end
+
+      subject do
+        configure.run(stdout)
+      end
+
+      it 'works as expected' do
+        subject
+        expect(stdout.string).to eql(<<~OUT)
+        mkdir -p /etc
+        mustache /tpl/etc/a_file.conf.tpl /etc/a_file.conf
+        OUT
+        expect(target/"empty"/"etc"/"a_file.conf").to exist
+        expect((target/"empty"/"etc"/"a_file.conf").read).to eql("EASYCAST_DISPLAYS=1-1920,0\n")
       end
     end
   end

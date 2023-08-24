@@ -4,6 +4,6 @@ TARGETDIR=$(echo "$2" | sed -e "s/\//\\\\\\//g")
 WHO="$3"
 for f in `find ${BASEDIR}/etc`
 do
-  result=$(echo $f | sed -e "s/^.*\/etc/${TARGETDIR}\/etc/g")
+  result=$(echo $f | sed -e "s/^.*\/etc/${TARGETDIR}\/etc/g" | sed "s/.tpl$//g" )
   chown $WHO:$WHO $result
 done

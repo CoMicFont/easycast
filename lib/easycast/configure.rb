@@ -1,5 +1,6 @@
 require 'colorize'
 require 'optparse'
+require 'mustache'
 
 module Easycast
   class Configure
@@ -7,7 +8,9 @@ module Easycast
     DEFAULT_OPTIONS = {
       source: Path.backfind('[Gemfile]')/'config',
       target: Path('/'),
+      scenes_folder: Path('scenes'),
       command: nil,
+      station: nil,
       colorize: true,
       dry_run: true,
       real_paths: false,
@@ -17,11 +20,11 @@ module Easycast
 
     def initialize(argv, options = {})
       @options = DEFAULT_OPTIONS.merge(options)
-      @configs = check_configs!(options_parser.parse!(argv))
+      @roles = check_roles!(options_parser.parse!(argv))
     end
 
     def options_parser
-      OptionParser.new do |opts|
+      @options_parser ||= OptionParser.new do |opts|
         opts.banner = "Usage: [sudo] configure [options] CONFIG..."
 
         opts.on("-j", "--jelp", "Print this help") do |v|
@@ -29,12 +32,14 @@ module Easycast
           fail!("")
         end
 
-        opts.on("--diff", "Show a diff of what would be done") do
+        opts.on("--diff=[STATION]", "Show a diff of what would be done") do |station|
           @options[:command] = :diff
+          @options[:station] = station
         end
 
-        opts.on("--configure", "Do the actual configuration") do
+        opts.on("--configure=[STATION]", "Do the actual configuration") do |station|
           @options[:command] = :configure
+          @options[:station] = station
         end
 
         opts.on("--no-color", "Don't use colors") do
@@ -68,11 +73,17 @@ module Easycast
       end
     end
 
-    def check_configs!(configs)
-      configs.map{|c|
-        folder = @options[:source]/c
+    def check_roles!(roles)
+      roles = station_roles if roles.empty? && @options[:station]
+      if roles.empty?
+        puts options_parser
+        fail!("A list of roles must be provided when a station is not specified")
+      end
+
+      roles.map{|role|
+        folder = @options[:source]/role
         if !folder.directory?
-          fail!("Unknown configuration `#{missing}`, config/#{missing} is not a folder")
+          fail!("Unknown role `#{role}`, config/#{folder} is not a folder")
         end
         folder
       }
@@ -80,11 +91,13 @@ module Easycast
 
     def config_files
       files = {}
-      @configs.each do |config|
+      @roles.each do |config|
         config.glob("**/*", File::FNM_DOTMATCH) do |source|
           next unless source.file?
           next if source.basename.to_s == "postinstall.sh"
+
           target = @options[:target]/(source.relative_to(config))
+          target = target.rm_ext if source.ext == ".tpl"
           files[target] = source
         end
       end
@@ -94,6 +107,7 @@ module Easycast
     def run(stdout = $stdout)
       cmd = @options[:command]
       if cmd.nil?
+        puts options_parser
         fail!("--configure or --diff must be used")
       else
         send("do_#{cmd}", stdout)
@@ -104,7 +118,8 @@ module Easycast
       config_files.each_pair do |target,source|
         header = highlight_color("## #{relative_to(target, @options[:target])}") << "\n"
         if target.exists?
-          identical = target.read == source.read
+          source_content, is_template = instantiated_content(source)
+          identical = (target.read == source_content)
           if identical && @options[:verbose]
             stdout << header
             stdout << detail_color('nothing to do') << "\n\n"
@@ -137,16 +152,19 @@ module Easycast
     end
 
     def instantiate_file(source, target, stdout)
-      return if target.exist? && source.read == target.read
+      source_content, is_template = instantiated_content(source)
+      target_content = target.exist? ? target.read : nil
+      return if source_content == target_content
 
-      stdout << info_color("cp #{relative_to(source, @options[:source])} #{relative_to(target, @options[:target])}") << "\n"
+      command = is_template ? "mustache" : "cp"
+      stdout << info_color("#{command} #{relative_to(source, @options[:source])} #{relative_to(target, @options[:target])}") << "\n"
       unless @options[:dry_run]
-        source.cp(target)
+        target.write(source_content)
       end
     end
 
     def do_post_install(stdout = $stdout)
-      @configs.each do |cfg|
+      @roles.each do |cfg|
         next unless (script = cfg/"postinstall.sh").file?
 
         if @options[:dry_run]
@@ -194,6 +212,48 @@ module Easycast
 
     def info_color(str)
       str
+    end
+
+    def instantiated_content(source)
+      is_template = source.ext == ".tpl"
+      if is_template
+        [Mustache.render(source.read, mustache_data), true]
+      else
+        [source.read, false]
+      end
+    end
+
+    def mustache_data
+      unless s = @options[:station]
+        fail!("A station must be specified when instantiating templates")
+      end
+      {
+        easycast_displays_envvar: scene_config.each_display_for(s)
+          .map{|d| "#{d[:identifier]}-#{d[:position]}" }
+          .join(';')
+      }
+    end
+
+    def station_roles
+      station_name = @options[:station]
+      station = scene_config.station_by_name(station_name)
+      unless station
+        names = scene_config.each_station.map{|s| s[:name] }.join(",")
+        fail!("Unknown station #{station_name} (known: #{names})")
+      end
+      station.roles
+    end
+
+    def scene_config
+      @scene_config ||= begin
+        unless cfg = @options[:scenes_folder]
+          fail!("A scenes folder must be provided to instantiate config templates")
+        end
+        unless cfg.directory? && (cfg/"scenes.yml").file?
+          fail!("#{cfg}/scenes.yml does not exist")
+        end
+        Config.load(cfg)
+      end
     end
 
   end # class Configure
