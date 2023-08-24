@@ -12,6 +12,7 @@ module Easycast
       dry_run: true,
       real_paths: false,
       verbose: false,
+      post_install: true,
     }
 
     def initialize(argv, options = {})
@@ -23,6 +24,11 @@ module Easycast
       OptionParser.new do |opts|
         opts.banner = "Usage: [sudo] configure [options] CONFIG..."
 
+        opts.on("-j", "--jelp", "Print this help") do |v|
+          puts opts
+          fail!("")
+        end
+
         opts.on("--diff", "Show a diff of what would be done") do
           @options[:command] = :diff
         end
@@ -33,6 +39,10 @@ module Easycast
 
         opts.on("--no-color", "Don't use colors") do
           @options[:colorize] = false
+        end
+
+        opts.on("--[no-]post-install", "Do not run post-install script") do |v|
+          @options[:post_install] = v
         end
 
         opts.on("--[no-]dry-run", "Do not do anything real") do |v|
@@ -73,6 +83,7 @@ module Easycast
       @configs.each do |config|
         config.glob("**/*", File::FNM_DOTMATCH) do |source|
           next unless source.file?
+          next if source.basename.to_s == "postinstall.sh"
           target = @options[:target]/(source.relative_to(config))
           files[target] = source
         end
@@ -113,6 +124,7 @@ module Easycast
         mkdir_p(target.parent, stdout)
         instantiate_file(source, target, stdout)
       end
+      do_post_install(stdout) if @options[:post_install]
     end
 
     def mkdir_p(folder, stdout)
@@ -130,6 +142,22 @@ module Easycast
       stdout << info_color("cp #{relative_to(source, @options[:source])} #{relative_to(target, @options[:target])}") << "\n"
       unless @options[:dry_run]
         source.cp(target)
+      end
+    end
+
+    def do_post_install(stdout = $stdout)
+      @configs.each do |cfg|
+        next unless (script = cfg/"postinstall.sh").file?
+
+        if @options[:dry_run]
+          stdout << highlight_color("Would run #{script}") << "\n"
+        else
+          if Kernel.system(script.to_s, @options[:target].to_s)
+            stdout << highlight_color("#{script} ran") << "\n"
+          else
+            fail!("#{script} failed.")
+          end
+        end
       end
     end
 
