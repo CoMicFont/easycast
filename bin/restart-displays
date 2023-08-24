@@ -1,0 +1,3 @@
+#!/bin/sh
+/home/pi/easycast/bin/close-displays
+/home/pi/easycast/bin/open-displays
