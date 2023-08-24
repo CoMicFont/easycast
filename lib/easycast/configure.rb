@@ -228,6 +228,7 @@ module Easycast
         fail!("A station must be specified when instantiating templates")
       end
       {
+        station_name: s,
         easycast_displays_envvar: scene_config.each_display_for(s)
           .map{|d| "#{d[:identifier]}-#{d[:position]}" }
           .join(';')
