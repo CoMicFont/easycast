@@ -100,9 +100,10 @@ module Easycast
     end
 
     def distant_exec(cmd)
-      [ 'easyslave', 'easymaster' ].map{|ip|
+      settings.config.each_station.map{|station|
+        ip = "easy#{station[:name]}"
         LOGGER.info("Sending `#{cmd}` to #{ip}")
-        LOGGER.debug(`ssh -i /home/pi/.ssh/id_rsa -o StrictHostKeyChecking=no pi@#{ip} /home/pi/easycast/bin/#{cmd}`)
+        LOGGER.debug(`ssh -i /home/pi/.ssh/id_ed25519 -o StrictHostKeyChecking=no pi@#{ip} /home/pi/easycast/bin/#{cmd} >/dev/null </dev/null 2>&1 &`)
       }.join("\n")
     end
 
