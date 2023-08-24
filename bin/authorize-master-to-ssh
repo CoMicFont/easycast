@@ -1,0 +1,5 @@
+#!/bin/sh
+if [ ! -f /home/pi/.ssh/authorized_keys ]
+then
+  su pi -c "mkdir -p /home/pi/.ssh && curl http://easymaster/ssh-public-key > /home/pi/.ssh/authorized_keys"
+fi
