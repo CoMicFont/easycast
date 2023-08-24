@@ -46,6 +46,7 @@ end
 require_relative 'easycast/error'
 require_relative 'easycast/model/config'
 require_relative 'easycast/model/scene'
+require_relative 'easycast/model/station'
 require_relative 'easycast/model/cast'
 require_relative 'easycast/model/asset'
 require_relative 'easycast/model/walk'

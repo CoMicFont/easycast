@@ -61,11 +61,27 @@ module Easycast
         children :? [Node]
       }
 
+      Station = {
+        name     :  String
+        roles    :  [String]
+        displays :? [Display]
+      }
+
+      DisplaySize = String( s | s =~ /\\d+x\\d+/ )
+      DisplayPosition = String( s | s =~ /\\d+.\\d+/ )
+
+      Display = {
+        identifier: Integer
+        size: DisplaySize
+        position: DisplayPosition
+      }
+
       # Main, a set of scenes and a hierarchical structure
       # presenting them
       {
         scenes    :  [Scene]
         nodes     :  [Node]
+        stations  :? [Station]
         animation :? AnimationOption
         videos    :? VideoOptions
       }
@@ -110,6 +126,15 @@ module Easycast
       @scenes_by_id[id]
     end
 
+    def each_station(&block)
+      _stations.each(&block)
+    end
+
+    def station_by_name(name)
+      @stations_by_name ||= _stations.each_with_object({}){|s,h| h[s[:name]] = s }
+      @stations_by_name[name]
+    end
+
     def ensure_assets!
       error = nil
       _scenes.each do |s|
@@ -150,6 +175,37 @@ module Easycast
 
     def _scenes
       @_scenes ||= scenes.map{|s| Scene.new(s, self) }
+    end
+
+    def _stations
+      @_stations ||= (stations || default_stations).map{|s| Station.new(s, self) }
+    end
+
+    def default_stations
+      [
+        {
+          name: "master",
+          roles: ["master", "displays"],
+          displays: [
+            {
+              identifier: 0,
+              size: "1920x1080",
+              position: "0,0",
+            },
+          ],
+        },
+        {
+          name: "slave",
+          roles: ["slave", "displays"],
+          displays: [
+            {
+              identifier: 1,
+              size: "1920x1080",
+              position: "0,0",
+            },
+          ],
+        },
+      ]
     end
 
     def ensure_animation!(data)

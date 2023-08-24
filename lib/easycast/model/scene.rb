@@ -25,7 +25,15 @@ module Easycast
     # @pre display_index < number of available displays
     #
     def cast_at(display_index)
-      _cast.find{|c| c[:display] == display_index }
+      _cast.find{|c| c[:display] == display_index } || empty_cast(display_index)
+    end
+
+    def empty_cast(display_index)
+      Cast.new({
+        display: display_index,
+        remote: false,
+        assets: [],
+      }, config)
     end
 
   private

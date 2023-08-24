@@ -14,12 +14,9 @@ module Easycast
       end
 
       def displays
-        (0..1).map do |index|
-          {
-            index: index,
-            name: "Display #{index}"
-          }
-        end
+        config.each_station.map {|station|
+          station[:displays] || []
+        }.flatten
       end
 
     end # class Home
