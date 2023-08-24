@@ -5,3 +5,4 @@ sh $(dirname $0)/../../bin/authorize-master-to-ssh
 systemctl disable dnsmasq hostapd
 systemctl unmask dhcpcd networking
 systemctl enable dhcpcd networking
+systemctl restart dhcpcd networking
