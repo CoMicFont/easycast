@@ -13,3 +13,4 @@ apt-get install \
   imagemagick
 apt autoremove
 gem install bundler
+service disable cups cups-browsed nginx
