@@ -95,6 +95,10 @@ module Easycast
       distant_exec("reboot")
     end
 
+    get '/ssh-public-key' do
+      send_file "/home/pi/.ssh/id_ed25519.pub"
+    end
+
     def distant_exec(cmd)
       [ 'easyslave', 'easymaster' ].map{|ip|
         LOGGER.info("Sending `#{cmd}` to #{ip}")

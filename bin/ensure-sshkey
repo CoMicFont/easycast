@@ -1,0 +1,6 @@
+#!/bin/sh
+if [ ! -f /home/pi/.ssh/id_ed25519 ]
+then
+  hostname=$(hostname)
+  su pi -c "ssh-keygen -t ed25519 -N '' -f /home/pi/.ssh/id_ed25519 -C 'easycast @ $hostname'"
+fi
