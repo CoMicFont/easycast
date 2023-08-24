@@ -125,7 +125,7 @@ module Easycast
             stdout << detail_color('nothing to do') << "\n\n"
           elsif !identical
             stdout << header
-            stdout << `diff -s --color=#{@options[:colorize] ? 'always' : 'never'} #{target} #{source}`.strip << "\n\n"
+            stdout << `diff -s --color=#{@options[:colorize] ? 'always' : 'never'} #{source} #{target}`.strip << "\n\n"
           end
         else
           stdout << header
