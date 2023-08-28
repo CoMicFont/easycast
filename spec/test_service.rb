@@ -15,7 +15,18 @@ module Easycast
     it 'serves the webassets without trouble' do
       get "/webassets/easycast-#{VERSION}.min.js"
       expect(last_response.status).to eql(200)
-      expect(last_response).to allow_cache(['Last-Modified'])
+      unless DEVELOPMENT_MODE
+        expect(last_response).to allow_cache(['Last-Modified'])
+      end
+    end
+
+    if DEVELOPMENT_MODE
+      it 'serves the devassets without trouble' do
+        get "/devassets/easycast.js"
+        expect(last_response.status).to eql(200)
+        expect(last_response).not_to allow_cache(['Last-Modified'])
+        expect(last_response).not_to allow_cache(['Etag'])
+      end
     end
 
     it 'serves the home page without trouble' do

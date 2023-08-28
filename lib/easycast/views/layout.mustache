@@ -3,13 +3,13 @@
   <meta charset="utf-8">
   <title>{{title}}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" type="text/css" href="/webassets/vendor{{version}}.css"/>
-  <link rel="stylesheet" type="text/css" href="/webassets/easycast{{version}}.css"/>
+  <link rel="stylesheet" type="text/css" href="{{webassets}}/vendor{{version}}.css"/>
+  <link rel="stylesheet" type="text/css" href="{{webassets}}/easycast{{version}}.css"/>
   {{#all_resources}}
   <link rel="preload" href="{{path}}" as="{{as}}">
   {{/all_resources}}
-  <script src="/webassets/vendor{{version}}.js"></script>
-  <script src="/webassets/easycast{{version}}.js"></script>
+  <script src="{{webassets}}/vendor{{version}}.js"></script>
+  <script src="{{webassets}}/easycast{{version}}.js"></script>
 </head>
 <body class="{{body_class}}">
 {{{yield}}}

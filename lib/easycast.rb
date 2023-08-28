@@ -7,7 +7,6 @@ require 'sinatra'
 require 'sinatra/reloader'
 require 'sprockets'
 require 'mustache'
-require 'rack/nocache'
 require 'rufus/scheduler'
 require 'digest'
 module Easycast

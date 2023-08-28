@@ -27,6 +27,10 @@ module Easycast
         DEVELOPMENT_MODE ? "" : "-#{VERSION}.min"
       end
 
+      def webassets
+        DEVELOPMENT_MODE ? "/devassets" : "/webassets"
+      end
+
       def yield
         page.render
       end

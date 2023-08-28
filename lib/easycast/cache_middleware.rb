@@ -1,12 +1,14 @@
-module Rack
+module Easycast
   #
   # Sets HTTP response headers to ensure that browers and other web
-  # middlewares won't ever cache the response.
+  # middlewares won't ever cache the response in dev mode.
   #
-  # Stolen from https://github.com/cwninja/rack-nocache, currently
+  # Ensures static assets are properly cached in production mode.
+  #
+  # Adapted from https://github.com/cwninja/rack-nocache, currently
   # distributed without explicit licence.
   #
-  class Nocache
+  class CacheMiddleware
 
     CACHE_BUSTER = {
       "Cache-Control" => "no-cache, no-store, max-age=0, must-revalidate",
@@ -37,5 +39,5 @@ module Rack
       end
     end
 
-  end # class Nocache
-end # module Rack
+  end # class CacheMiddleware
+end # module Easycast
