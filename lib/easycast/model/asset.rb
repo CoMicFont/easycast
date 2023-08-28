@@ -110,7 +110,7 @@ module Easycast
         video_options = cast.videos || config.videos
         mode = state.scheduler.paused? ? :pause : :play
         loop = !!video_options[:loop][mode] ? "loop" : ""
-        walk_on_end = video_options[:walk_on_end]
+        walk_on_end = video_options[:walk_on_end] && mode === :play
         tag = %Q{
           <video id="#{unique_id}" playsinline autoplay muted #{loop} source style="height: 100%" src="#{ASSETS_PREFIX}/#{@path}" type="#{video_type}">This browser does not support the video tag.</video>
         }
