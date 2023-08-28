@@ -230,7 +230,7 @@ module Easycast
       {
         station_name: s,
         easycast_displays_envvar: scene_config.each_display_for(s)
-          .map{|d| "#{d[:identifier]}-#{d[:position]}" }
+          .map{|d| "#{d[:identifier]}-#{d[:position]}-#{d[:size]}" }
           .join(';')
       }
     end
