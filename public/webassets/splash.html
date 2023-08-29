@@ -19,44 +19,7 @@
   </div>
 </aside>
 
-<script>function splashWait(targetUrl) {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      window.location = targetUrl;
-    } else if (this.readyState == 4) {
-      setTimeout(function(){
-        splashWait(targetUrl);
-      }, 2500);
-    }
-  };
-  console.log("Trying to reach master at " + targetUrl);
-  xhttp.open("GET", targetUrl, true);
-  xhttp.send();
-}
-
-function splashConnect() {
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  const targetUrl = decodeURIComponent(urlParams.get('target') || "http://easycast/");
-
-  function refresh() {
-    window.location = window.location;
-  }
-  setTimeout(refresh, 15000);
-
-  setTimeout(function() {
-    splashWait(targetUrl);
-  }, 1500);
-}
-
-function splashReconnect() {
-  jQuery('aside.splash').show();
-
-  splashWait(window.location)
-}
-;
-</script>
+<script>function splashWait(t){var n=new XMLHttpRequest;n.onreadystatechange=function(){4==this.readyState&&200==this.status?window.location=t:4==this.readyState&&setTimeout(function(){splashWait(t)},2500)},console.log("Trying to reach master at "+t),n.open("GET",t,!0),n.send()}function splashConnect(){function t(){window.location=window.location}const n=window.location.search,o=new URLSearchParams(n),a=decodeURIComponent(o.get("target")||"http://easycast/");setTimeout(t,15e3),setTimeout(function(){splashWait(a)},1500)}function splashReconnect(){jQuery("aside.splash").show(),splashWait(window.location)}</script>
 <script>splashConnect();</script>
 </body>
 </html>
