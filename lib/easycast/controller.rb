@@ -59,6 +59,14 @@ module Easycast
     end
 
     ##
+    ## Returns the .html file of the splash screen
+    ##
+    get '/splash' do
+      content_type :html
+      serve Views::Splash.new, Views::SplashLayout
+    end
+
+    ##
     ## Returns the .html file of the remote
     ##
     get '/remote' do
@@ -216,10 +224,12 @@ module Easycast
 
   private
 
-    def serve(view)
+    def serve(view, layout = nil)
       settings.load_config if has_error? || settings.config.outdated?
       if has_error?
         serve_error
+      elsif layout
+        layout.new(view).render
       elsif env['HTTP_ACCEPT'] == "application/vnd.easycast.display+html"
         Views::Partial.new(view).render
       else
@@ -254,3 +264,5 @@ require_relative 'views/display'
 require_relative 'views/remote'
 require_relative 'views/doors'
 require_relative 'views/error'
+require_relative 'views/splash_layout'
+require_relative 'views/splash'

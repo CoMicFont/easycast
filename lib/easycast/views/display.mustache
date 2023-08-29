@@ -1,15 +1,17 @@
-<div class="scene" id="{{scene_id}}">
-  {{#assets}}
-  <div class="asset">
-    {{{to_html}}}
+<main class="display">
+  <div class="scene" id="{{scene_id}}">
+    {{#assets}}
+    <div class="asset">
+      {{{to_html}}}
+    </div>
+    {{/assets}}
   </div>
-  {{/assets}}
-</div>
 
-{{#with_remote}}
-<div id="menu" class="menu">
-  <a href="javascript:void(0)" class="close-menu-btn">&times;</a>
-  {{{remote}}}
-</div>
-<span class="open-menu-btn">&#9776;</span>
-{{/with_remote}}
+  {{#with_remote}}
+  <div id="menu" class="menu">
+    <a href="javascript:void(0)" class="close-menu-btn">&times;</a>
+    {{{remote}}}
+  </div>
+  <span class="open-menu-btn">&#9776;</span>
+  {{/with_remote}}
+</main>

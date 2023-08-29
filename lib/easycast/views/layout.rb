@@ -39,6 +39,10 @@ module Easycast
         page.main_script
       end
 
+      def splash
+        Splash.new.render
+      end
+
     end
   end
 end

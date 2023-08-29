@@ -2,7 +2,7 @@ body.remote {
   padding: 2%;
   padding-bottom: 120px;
   background-color: #222;
-  > ul.remote {
+  > main.remote > ul {
     position: relative;
     width: 100%;
     margin: auto;
@@ -12,7 +12,7 @@ body.remote {
       font-size: 1em;
     }
   }
-  > ul.bottom-buttons {
+  > main.remote > ul.bottom-buttons {
     background-color: white;
     display: flex;
     width: 100%;
@@ -40,12 +40,12 @@ body.remote {
 @media (max-width: 768px) {
   body.remote {
     font-size: 22px;
-    > ul.remote {
+    > main.remote > ul {
       li > a {
         padding: 0.8em;
       }
     }
-    > ul.bottom-buttons {
+    > main.remote > ul.bottom-buttons {
       font-size: 1em;
       > li {
         margin: 0 0.5em;

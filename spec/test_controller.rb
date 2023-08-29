@@ -32,6 +32,12 @@ module Easycast
       end
     end
 
+    describe "GET /splash" do
+      subject { "/splash" }
+
+      it_behaves_like 'An end-user page'
+    end
+
     describe "GET /display/:i" do
       subject { "/display/0" }
       it_behaves_like 'An end-user page'
