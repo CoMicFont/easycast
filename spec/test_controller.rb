@@ -53,6 +53,11 @@ module Easycast
       it_behaves_like 'An end-user page'
     end
 
+    describe "GET /qr-codes" do
+      subject { "/qr-codes" }
+      it_behaves_like 'An end-user page'
+    end
+
     describe 'GET /state' do
 
       it 'returns the current controller state' do

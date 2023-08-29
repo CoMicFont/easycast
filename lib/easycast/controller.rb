@@ -83,6 +83,14 @@ module Easycast
     end
 
     ##
+    ## Returns the .html file of the QR codes
+    ##
+    get '/qr-codes' do
+      content_type :html
+      serve Views::QrCodes.new(settings.config, settings.tour.to_state)
+    end
+
+    ##
     ## Force all displays to refresh
     ##
     post '/refresh' do
@@ -266,3 +274,4 @@ require_relative 'views/doors'
 require_relative 'views/error'
 require_relative 'views/splash_layout'
 require_relative 'views/splash'
+require_relative 'views/qr_codes'
