@@ -16,6 +16,23 @@ module Easycast
       Path.dir/"fixtures"/"target"
     end
 
+    describe "instantiate_file_path" do
+      let(:configure) do
+        Configure.new(["base", "master"], source: fixtures)
+      end
+
+      it 'works when no var' do
+        got = configure.instantiate_file_path(Path("/etc/hello"))
+        expect(got).to eql(Path("/etc/hello"))
+      end
+
+      it 'works when somes' do
+        scope = OpenStruct.new(some: "hello")
+        got = configure.instantiate_file_path(Path("/etc/${some}"), scope)
+        expect(got).to eql(Path("/etc/hello"))
+      end
+    end
+
     describe "build_tree" do
       let(:configure) do
         Configure.new(["base", "master"], source: fixtures)

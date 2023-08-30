@@ -105,6 +105,7 @@ module Easycast
 
           target = @options[:target]/(source.relative_to(config))
           target = target.rm_ext if source.ext == ".tpl"
+          target = instantiate_file_path(target)
           files[target] = source
         end
       end
@@ -194,6 +195,16 @@ module Easycast
       "/#{x.relative_to(origin)}"
     end
 
+    def instantiate_file_path(path, scope = nil)
+      return path unless path.to_s =~ /\$\{[^\}]+\}/
+
+      scope ||= mustache_data
+      s = path.to_s.gsub(/\$\{[^\}]+\}/) do |var|
+        scope.instance_eval(var[2...-1])
+      end
+      Path(s)
+    end
+
     def fail!(message)
       puts error_colored(message)
       exit(0)
@@ -231,9 +242,9 @@ module Easycast
     end
 
     def mustache_data
-      {
+      OpenStruct.new({
         station_config: station_config!,
-      }
+      })
     end
 
     def station_roles
