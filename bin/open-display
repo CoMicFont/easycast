@@ -1,4 +1,5 @@
 #!/bin/sh
+H=${EASYCAST_USER_HOME:-$HOME}
 DISPLAY_NUM="${1:-0}"
 WINDOW_POSITION="${2:-0,0}"
 WINDOW_SIZE="${3:-1920,1080}"
@@ -16,5 +17,5 @@ chromium-browser \
   --disable-infobars \
   --disable-session-crashed-bubble \
   --disk-cache-size=104857600 \
-  --user-data-dir="/home/pi/Documents/Profiles/$DISPLAY_NUM" \
-  "file:///home/pi/easycast/public/webassets/splash.html?target=http://easymaster/display/$DISPLAY_NUM"
+  --user-data-dir="$H/Documents/Profiles/$DISPLAY_NUM" \
+  "file://$H/easycast/public/webassets/splash.html?target=http://easymaster/display/$DISPLAY_NUM"

@@ -14,6 +14,9 @@ module Easycast
   # Version of Easycast software
   VERSION = "1.8.0"
 
+  # Where easycast (the user) home folder is
+  EASYCAST_USER_HOME = ENV['EASYCAST_USER_HOME'] || Dir.home
+
   # Root folder of the project structure
   ROOT_FOLDER = Path.backfind('.[Gemfile]') or raise("Missing Gemfile")
 

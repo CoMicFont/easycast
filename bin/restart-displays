@@ -1,3 +1,4 @@
 #!/bin/sh
-/home/pi/easycast/bin/close-displays
-/home/pi/easycast/bin/open-displays
+DIR=$(dirname $0)
+$DIR/close-displays
+$DIR/open-displays

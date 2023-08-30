@@ -121,14 +121,14 @@ module Easycast
     end
 
     get '/ssh-public-key' do
-      send_file "/home/pi/.ssh/id_ed25519.pub"
+      send_file "#{EASYCAST_USER_HOME}/.ssh/id_ed25519.pub"
     end
 
     def distant_exec(cmd)
       settings.config.each_station.map{|station|
         ip = "easy#{station[:name]}"
         LOGGER.info("Sending `#{cmd}` to #{ip}")
-        LOGGER.debug(`ssh -i /home/pi/.ssh/id_ed25519 -o StrictHostKeyChecking=no pi@#{ip} /home/pi/easycast/bin/#{cmd} >/dev/null </dev/null 2>&1 &`)
+        LOGGER.debug(`ssh -i #{EASYCAST_USER_HOME}/.ssh/id_ed25519 -o StrictHostKeyChecking=no pi@#{ip} #{EASYCAST_USER_HOME}/easycast/bin/#{cmd} >/dev/null </dev/null 2>&1 &`)
       }.join("\n")
     end
 
