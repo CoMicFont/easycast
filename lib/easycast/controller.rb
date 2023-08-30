@@ -39,6 +39,15 @@ module Easycast
     end
     load_config
 
+  ### Station configurations
+
+    get '/stations/:station/config' do |station|
+      s = settings.config.station_by_name(station, true)
+      not_found unless s
+      content_type :yaml
+      s.to_h.to_yaml
+    end
+
   ### Display and remote control
 
     #

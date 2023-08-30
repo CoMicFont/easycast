@@ -1,0 +1,9 @@
+---
+name: slave
+roles:
+- master
+- displays
+displays:
+- identifier: 1
+  size: 1920x1080
+  position: "1920,0"

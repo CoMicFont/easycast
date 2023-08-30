@@ -124,5 +124,25 @@ module Easycast
 
     end
 
+    describe "GET /stations/:station/config" do
+
+      it 'returns a station info in YAML' do
+        get '/stations/slave/config'
+        expect(last_response.status).to eql(200)
+        expect(last_response['Content-Type']).to eql("text/yaml;charset=utf-8")
+        data = YAML.load(last_response.body)
+        expect(Station.dress(data)).to be_a(Station)
+      end
+
+      it 'matches the closest name' do
+        get '/stations/easyslave-b154/config'
+        expect(last_response.status).to eql(200)
+        expect(last_response['Content-Type']).to eql("text/yaml;charset=utf-8")
+        data = YAML.load(last_response.body)
+        expect(Station.dress(data)).to be_a(Station)
+      end
+
+    end
+
   end
 end

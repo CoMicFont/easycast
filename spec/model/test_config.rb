@@ -94,11 +94,11 @@ module Easycast
 
     describe "Change control" do
 
-      let(:config){ Config.load(Path.dir/"fixtures") }
+      let(:config){ Config.load(Path.dir.parent/"fixtures") }
 
       it 'works as expected' do
         expect(config.outdated?).to eql(false)
-        (Path.dir/"fixtures/scenes.yml").touch
+        (Path.dir.parent/"fixtures/scenes.yml").touch
         expect(config.outdated?).to eql(true)
       end
 

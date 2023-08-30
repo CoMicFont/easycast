@@ -140,12 +140,10 @@ module Easycast
       end
     end
 
-    def each_display_for(station, &block)
-      (station_by_name(station)[:displays] || []).each(&block)
-    end
-
-    def station_by_name(name)
+    def station_by_name(name, closest = false)
       @stations_by_name ||= _stations.each_with_object({}){|s,h| h[s[:name]] = s }
+      s = @stations_by_name[name]
+      name = find_closest_name(name, @stations_by_name.keys) unless s
       @stations_by_name[name]
     end
 
@@ -220,6 +218,10 @@ module Easycast
           ],
         },
       ]
+    end
+
+    def find_closest_name(name, candidates)
+      candidates.find{|c| !name.index(c).nil? }
     end
 
     def ensure_animation!(data)

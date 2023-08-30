@@ -1,6 +1,8 @@
 require 'colorize'
 require 'optparse'
 require 'mustache'
+require 'open-uri'
+require 'yaml'
 
 module Easycast
   class Configure
@@ -42,6 +44,11 @@ module Easycast
           @options[:station] = station
         end
 
+        opts.on("--station=URI", "Specify the station configuration to us") do |uri|
+          data = YAML.load(URI.open(uri).read)
+          @station_config = Station.dress(data)
+        end
+
         opts.on("--no-color", "Don't use colors") do
           @options[:colorize] = false
         end
@@ -74,7 +81,7 @@ module Easycast
     end
 
     def check_roles!(roles)
-      roles = station_roles if roles.empty? && @options[:station]
+      roles = station_roles if roles.empty?
       if roles.empty?
         puts options_parser
         fail!("A list of roles must be provided when a station is not specified")
@@ -224,28 +231,30 @@ module Easycast
     end
 
     def mustache_data
-      unless s = @options[:station]
-        fail!("A station must be specified when instantiating templates")
-      end
       {
-        station_name: s,
-        easycast_displays_envvar: scene_config.each_display_for(s)
-          .map{|d| "#{d[:identifier]}-#{d[:position]}-#{d[:size]}" }
-          .join(';')
+        station_config: station_config!,
       }
     end
 
     def station_roles
-      station_name = @options[:station]
-      station = scene_config.station_by_name(station_name)
-      unless station
-        names = scene_config.each_station.map{|s| s[:name] }.join(",")
-        fail!("Unknown station #{station_name} (known: #{names})")
-      end
-      station.roles
+      station_config!.roles
     end
 
-    def scene_config
+    def station_config!
+      @station_config ||= begin
+        unless s = @options[:station]
+          fail!("A station must be specified when instantiating templates")
+        end
+        station_config = scene_config!.station_by_name(s)
+        unless station_config
+          names = scene_config!.each_station.map{|s| s[:name] }.join(",")
+          fail!("Unknown station #{s} (known: #{names})")
+        end
+        station_config
+      end
+    end
+
+    def scene_config!
       @scene_config ||= begin
         unless cfg = @options[:scenes_folder]
           fail!("A scenes folder must be provided to instantiate config templates")

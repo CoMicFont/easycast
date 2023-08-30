@@ -1,1 +1,1 @@
-easy{{{station_name}}}
+easy{{{station_config.name}}}
