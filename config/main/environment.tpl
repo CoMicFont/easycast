@@ -1,0 +1,1 @@
+EASYCAST_USER_HOME=/home/pi

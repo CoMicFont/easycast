@@ -1,0 +1,4 @@
+#!/bin/sh
+H=${EASYCAST_USER_HOME:-$HOME}
+U=$(echo $H | cut -f3 -d'/')
+su $U -c "cp $H/.ssh/id_ed25519.pub $H/.ssh/authorized_keys"

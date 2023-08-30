@@ -1,6 +1,7 @@
 #!/bin/sh
 H=${EASYCAST_USER_HOME:-$HOME}
+U=$(echo $H | cut -f3 -d'/')
 if [ ! -f $H/.ssh/authorized_keys ]
 then
-  su pi -c "mkdir -p $H/.ssh && curl http://easymaster/ssh-public-key > $H/.ssh/authorized_keys"
+  su $U -c "mkdir -p $H/.ssh && curl http://easymaster/ssh-public-key > $H/.ssh/authorized_keys"
 fi
