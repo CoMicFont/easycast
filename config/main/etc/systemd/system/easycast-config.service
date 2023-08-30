@@ -1,0 +1,11 @@
+[Unit]
+Description=Generate easycast config files for current device
+DefaultDependencies=no
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/local/bin/easycast-gen-config
+
+[Install]
+WantedBy=sysinit.target

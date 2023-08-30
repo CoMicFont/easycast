@@ -17,9 +17,12 @@ if [ "$_IP" ]; then
   printf "My IP address is %s\n" "$_IP"
 fi
 
-iptables-restore < /etc/iptables.ipv4.nat
+# Make sure the master node has the correct hostname
+hostname easycast-master
+hostnamectl set-hostname easycast-master
+sed -i 's/127.0.1.1.*/127.0.1.1 easycast-master/' /etc/hosts
 
-cd $EASYCAST_USER_HOME/easycast
-bin/start
+# Firewall
+iptables-restore < /etc/iptables.ipv4.nat
 
 exit 0
