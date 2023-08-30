@@ -9,7 +9,7 @@ module Easycast
           "displays" => [
             {
               "identifier" => 1,
-              "size" => "2560x1440",
+              "size" => "2560,1440",
               "position" => "2560,0",
             },
           ],
@@ -19,7 +19,7 @@ module Easycast
       it 'works' do
         s = Station.dress(data)
         expect(s.name).to eql("master")
-        expect(s.displays_envvar).to eql("1-2560,0-2560x1440")
+        expect(s.displays_envvar).to eql("1-2560,0-2560,1440")
       end
     end
   end

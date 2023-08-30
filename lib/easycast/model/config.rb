@@ -67,7 +67,7 @@ module Easycast
         displays :? [Display]
       }
 
-      DisplaySize = String( s | s =~ /\\d+x\\d+/ )
+      DisplaySize = String( s | s =~ /\\d+.\\d+/ )
       DisplayPosition = String( s | s =~ /\\d+.\\d+/ )
 
       Display = {
@@ -201,7 +201,7 @@ module Easycast
           displays: [
             {
               identifier: 0,
-              size: "1920x1080",
+              size: "1920,1080",
               position: "0,0",
             },
           ],
@@ -212,7 +212,7 @@ module Easycast
           displays: [
             {
               identifier: 1,
-              size: "1920x1080",
+              size: "1920,1080",
               position: "0,0",
             },
           ],

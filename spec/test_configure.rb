@@ -123,7 +123,7 @@ module Easycast
         mustache /tpl/etc/a_file.conf.tpl /etc/a_file.conf
         OUT
         expect(target/"empty"/"etc"/"a_file.conf").to exist
-        expect((target/"empty"/"etc"/"a_file.conf").read).to eql("EASYCAST_DISPLAYS=1-1920,0-1920x1080\n")
+        expect((target/"empty"/"etc"/"a_file.conf").read).to eql("EASYCAST_DISPLAYS=1-1920,0-1920,1080\n")
       end
     end
 
@@ -162,7 +162,7 @@ module Easycast
         mustache /tpl/etc/a_file.conf.tpl /etc/a_file.conf
         OUT
         expect(target/"empty"/"etc"/"a_file.conf").to exist
-        expect((target/"empty"/"etc"/"a_file.conf").read).to eql("EASYCAST_DISPLAYS=1-1920,0-1920x1080\n")
+        expect((target/"empty"/"etc"/"a_file.conf").read).to eql("EASYCAST_DISPLAYS=1-1920,0-1920,1080\n")
       end
     end
   end
