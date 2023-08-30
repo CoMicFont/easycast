@@ -91,7 +91,7 @@ module Easycast
 
     describe "--configure with templates" do
       let(:configure) do
-        Configure.new(["--configure=slave", "--no-dry-run", "--no-color", "tpl"], {
+        Configure.new(["--configure=station", "--no-dry-run", "--no-color", "tpl"], {
           source: fixtures,
           target: target/"empty",
           scenes_folder: fixtures.parent,

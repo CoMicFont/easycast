@@ -5,7 +5,7 @@ module Easycast
       let(:data) {
         {
           "name" => "master",
-          "roles" => ["master", "slave"],
+          "roles" => ["master", "station"],
           "displays" => [
             {
               "identifier" => 1,

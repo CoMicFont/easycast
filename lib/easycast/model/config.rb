@@ -207,8 +207,8 @@ module Easycast
           ],
         },
         {
-          name: "slave",
-          roles: ["slave", "displays"],
+          name: "station",
+          roles: ["station", "displays"],
           displays: [
             {
               identifier: 1,

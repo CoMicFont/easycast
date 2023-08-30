@@ -10,15 +10,15 @@ animation:
 stations:
 - name: master
   roles:
-  - master
+  - main
   - displays
   displays:
   - identifier: 0
     size: 1920x1080
     position: "0,0"
-- name: slave
+- name: station
   roles:
-  - master
+  - node
   - displays
   displays:
   - identifier: 1
