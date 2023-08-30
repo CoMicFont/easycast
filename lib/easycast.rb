@@ -17,6 +17,9 @@ module Easycast
   # Where easycast (the user) home folder is
   EASYCAST_USER_HOME = ENV['EASYCAST_USER_HOME'] || Dir.home
 
+  # The name of the user itself
+  EASYCAST_USER = EASYCAST_USER_HOME.split('/').last
+
   # Root folder of the project structure
   ROOT_FOLDER = Path.backfind('.[Gemfile]') or raise("Missing Gemfile")
 
