@@ -12,7 +12,7 @@ require 'digest'
 module Easycast
 
   # Version of Easycast software
-  VERSION = "1.8.0"
+  VERSION = "1.8.1"
 
   # Where easycast (the user) home folder is
   EASYCAST_USER_HOME = ENV['EASYCAST_USER_HOME'] || Dir.home

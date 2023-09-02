@@ -41,6 +41,10 @@ module Easycast
       raise NotImplementedError
     end
 
+    def convert(source, target)
+      %Q{convert -resize "1920x1080\>" #{source} #{target}}
+    end
+
     class SimpleFile < Asset
 
       def initialize(path, config)
@@ -80,7 +84,7 @@ module Easycast
 
     end # class Svg
 
-    class Png < SimpleFile
+    class Image < SimpleFile
 
       def to_html(state, cast)
         %Q{<img src="#{ASSETS_PREFIX}/#{@path}">}
@@ -92,16 +96,50 @@ module Easycast
 
     end # class Png
 
-    class Jpg < SimpleFile
+    class ResizableImage < SimpleFile
+
+      def initialize(path, config)
+        @file = config.folder/"assets"/path
+        @target = config.folder/"assets/_images"
+        @name = Digest::SHA1.hexdigest(path)
+        @path = "assets/_images/#{@name}#{@file.ext}"
+        @target_image = (@target/@name).sub_ext(@file.ext)
+      end
+
+      def ensure!
+        generate_image!
+      end
+
+      def file
+        @file
+      end
 
       def to_html(state, cast)
-        %Q{<img src="#{ASSETS_PREFIX}/#{@path}">}
+        %Q{<img src="/#{@path}">}
       end
 
       def all_resources
         [ { path: "/#{@path}", as: "image" } ]
       end
 
+      private
+
+        def generate_image!
+          @target.mkdir_p unless @target.exists?
+          unless @target_image.exists?
+            puts "Generating image for `#{@path}`"
+            cmd = convert(@file, @target_image)
+            puts "#{cmd}"
+            `#{cmd}`
+          end
+        end
+
+    end
+
+    class Png < ResizableImage
+    end # class Png
+
+    class Jpg < ResizableImage
     end # class Jpg
 
     class Video < SimpleFile
@@ -112,7 +150,7 @@ module Easycast
         loop = !!video_options[:loop][mode] ? "loop" : ""
         walk_on_end = video_options[:walk_on_end] && mode === :play
         tag = %Q{
-          <video id="#{unique_id}" playsinline autoplay muted #{loop} source style="height: 100%" src="#{ASSETS_PREFIX}/#{@path}" type="#{video_type}">This browser does not support the video tag.</video>
+          <video id="#{unique_id}" playsinline autoplay muted #{loop} source style="width: 1920px; height: auto;" src="#{ASSETS_PREFIX}/#{@path}" type="#{video_type}">This browser does not support the video tag.</video>
         }
         if walk_on_end
           tag += %Q{
@@ -180,8 +218,8 @@ module Easycast
       def initialize(arg, config)
         super(config)
         @options = arg[:options] || { interval: 2 }
-        @assets  = arg[:images].map { |i| Asset.for(i, config) }
-        @target = config.folder/"assets/galleries"
+        @assets  = arg[:images].map { |i| Image.new(i, config) }
+        @target = config.folder/"assets/_galleries"
       end
 
       def ensure!
@@ -214,13 +252,13 @@ HTML
           unless file.exists?
             puts "Generating gallery image for `#{a.path}`"
             [
-              %Q{convert -resize 1920x #{a.file} #{file}}
+              convert(a.file, file)
             ].each do |cmd|
               puts "#{cmd}"
               `#{cmd}`
             end
           end
-          @generated << "#{ASSETS_PREFIX}/galleries/#{name}#{a.file.ext}"
+          @generated << "#{ASSETS_PREFIX}/_galleries/#{name}#{a.file.ext}"
         end
       end
 
@@ -231,9 +269,9 @@ HTML
       def initialize(arg, config)
         super(config)
         @options = arg[:options] || { }
-        @assets  = arg[:images].map { |i| Asset.for(i, config) }
+        @assets  = arg[:images].map { |i| Image.new(i, config) }
         @sha = Digest::SHA1.hexdigest(@assets.map{|a| a.path }.join('/'))
-        @path = "layers/#{@sha}.png"
+        @path = "_layers/#{@sha}.png"
         @file = config.folder/("assets/#{@path}")
       end
 
@@ -259,14 +297,14 @@ HTML
         Path("/tmp/easycast").mkdir_p
         sources = @assets.map{|a|
           source = "/tmp/easycast/#{a.file.basename}"
-          cmd = %Q{convert -resize 1920x #{a.file} #{source}}
+          cmd = convert(a.file, source)
           puts "#{cmd}"
           `#{cmd}`
           source
         }
         [
           %Q{convert #{sources.join(' ')} -background none -flatten #{@file}},
-          %Q{convert -resize 1920x #{@file} #{@file}}
+          convert(@file, @file)
         ].each do |cmd|
           puts "#{cmd}"
           `#{cmd}`

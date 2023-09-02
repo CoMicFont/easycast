@@ -2,17 +2,11 @@ body.display {
   background: black;
   margin: 0;
   padding: 0;
-  width: 100%;
-  height: 100%;
   font-size: 26px;
   overflow: hidden;
   .asset svg,
   .asset img {
     background: transparent;
-    position: absolute;
-    top: 0;
-    width: auto;
-    height: 100%;
     animation: imageAnimation 1s linear;
   }
   article {
