@@ -3,7 +3,6 @@ require_relative 'cache_middleware'
 module Easycast
   SprocketsAssets = Sprockets::Environment.new
   SprocketsAssets.append_path Path.dir/('webassets')
-  SprocketsAssets.append_path SCENES_FOLDER/("assets")
   SprocketsAssets.css_compressor = :scss
 
   Service = Rack::Builder.new do

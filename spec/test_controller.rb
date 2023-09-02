@@ -7,6 +7,11 @@ module Easycast
       Easycast::Controller
     end
 
+    before do
+      folder = ROOT_FOLDER/"documentation"
+      Easycast::Controller.load_config(folder)
+    end
+
     shared_examples_for "An end-user page" do
 
       it 'it served without trouble' do
