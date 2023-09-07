@@ -34,4 +34,33 @@ ul.button-list {
     margin-top: 10px;
     padding-left: 40px;
   }
+  li.collapsable {
+    &:hover {
+      cursor: pointer;
+    }
+    > a {
+      display: block;
+      position: relative;
+   }
+    > a:after {
+      font: normal normal normal 20px/1 FontAwesome;
+      content: "\f067";
+      display: block;
+      position: absolute;
+      right: 20px;
+      top: calc(50% - 10px);
+    }
+    > ul {
+      display: none;
+    }
+    &.collapsed {
+      > a:after {
+        font: normal normal normal 24px/1 FontAwesome;
+        content: "\f068"
+      }
+      > ul {
+        display: block;
+      }
+    }
+  }
 }

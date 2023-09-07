@@ -18,7 +18,11 @@ module Easycast
         end
 
         def css_class
-          index == walk.state ? "node-#{index} active" : "node-#{index}"
+          clazz = "node-#{index}"
+          clazz << " active" if index == walk.state
+          clazz << " collapsable" if node[:children]
+          clazz << " dynamic" unless node[:children]
+          clazz
         end
 
         def subtree
