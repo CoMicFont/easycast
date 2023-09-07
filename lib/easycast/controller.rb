@@ -174,13 +174,43 @@ module Easycast
       end
     end
 
+  ### Scheduler
+
+    post '/video/pause' do
+      notify_video('pause')
+      204
+    end
+
+    post '/video/play' do
+      notify_video('play')
+      204
+    end
+
+    post '/video/backward' do
+      notify_video('backward')
+      204
+    end
+
+    post '/video/forward' do
+      notify_video('forward')
+      204
+    end
+
+    def notify_video(command)
+      unless settings.tour.paused?
+        settings.tour.pause
+      end
+      settings.notify(type: 'video', detail: { command: command })
+      204
+    end
+
   ### Controller tour
 
     def self.state_change(&bl)
       old_ext_state = settings.tour.to_external_state
       bl.call
       new_ext_state = settings.tour.to_external_state
-      notify(new_ext_state) if (old_ext_state != new_ext_state)
+      notify_state(new_ext_state) if (old_ext_state != new_ext_state)
     end
 
     def state_change(*args, &bl)
@@ -200,6 +230,10 @@ module Easycast
       settings.tour.to_external_state.to_json
     end
 
+    def self.notify_state(state = settings.tour.to_external_state)
+      notify(type: 'state', detail: state)
+    end
+
   ### Streaming approach
 
     set connections: []
@@ -215,10 +249,6 @@ module Easycast
       settings.connections.each do |out|
         out << "data: " << state.to_json << "\n\n"
       end
-    end
-
-    def notify(state = settings.tour.to_external_state)
-      settings.notify(state)
     end
 
   private

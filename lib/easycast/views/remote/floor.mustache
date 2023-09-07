@@ -3,6 +3,30 @@
   <li class="{{css_class}}">
     <a href="/tour/jump/{{index}}">{{name}}</a>
     {{{subtree}}}
+    {{#video}}
+    <ul class="controls">
+      <li class="dynamic">
+        <a href="/video/backward">
+          <i class="fa fa-backward" aria-hidden="true"></i>
+        </a>
+      </li>
+      <li class="dynamic">
+        <a href="/video/play">
+          <i class="fa fa-play" aria-hidden="true"></i>
+        </a>
+      </li>
+      <li class="dynamic">
+        <a href="/video/pause">
+          <i class="fa fa-pause" aria-hidden="true"></i>
+        </a>
+      </li>
+      <li class="dynamic">
+        <a href="/video/forward">
+          <i class="fa fa-forward" aria-hidden="true"></i>
+        </a>
+      </li>
+    </ul>
+    {{/video}}
   </li>
   {{/nodes}}
 </ul>

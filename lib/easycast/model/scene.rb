@@ -18,6 +18,12 @@ module Easycast
       end
     end
 
+    def has_video?
+      _cast.any? {|cast|
+        cast.has_video?
+      }
+    end
+
     #
     # Returns the case to use for a given display.
     #

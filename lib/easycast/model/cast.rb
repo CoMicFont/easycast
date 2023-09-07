@@ -21,6 +21,12 @@ module Easycast
       @assets ||= self[:assets].map{|a| Asset.for(self, a, config) }
     end
 
+    def has_video?
+      assets.any? {|asset|
+        asset.is_a?(Asset::Video)
+      }
+    end
+
     def ensure_assets!
       assets.each do |a|
         a.ensure!
