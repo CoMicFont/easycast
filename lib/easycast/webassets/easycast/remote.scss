@@ -1,8 +1,9 @@
-body.remote {
+body.remote,
+body.switcher {
   padding: 2%;
   padding-bottom: 120px;
   background-color: #222;
-  > main.remote > ul {
+  > main > ul {
     position: relative;
     width: 100%;
     margin: auto;
@@ -12,7 +13,7 @@ body.remote {
       font-size: 1em;
     }
   }
-  > main.remote > ul.bottom-buttons {
+  > main > ul.bottom-buttons {
     background-color: white;
     display: flex;
     width: 100%;
@@ -33,19 +34,21 @@ body.remote {
   }
 }
 
-body.remote {
+body.remote,
+body.switcher {
   font-size: 28px;
 }
 
 @media (max-width: 768px) {
-  body.remote {
+  body.remote,
+  body.switcher {
     font-size: 22px;
-    > main.remote > ul {
+    > main > ul {
       li > a {
         padding: 0.8em;
       }
     }
-    > main.remote > ul.bottom-buttons {
+    > main > ul.bottom-buttons {
       font-size: 1em;
       > li {
         margin: 0 0.5em;

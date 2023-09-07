@@ -10,17 +10,18 @@ module Easycast
       also_reload 'lib/easycast/views/*.rb'
       also_reload 'lib/easycast/views/remote/*.rb'
       also_reload 'lib/easycast/model/*.rb'
+      also_reload 'lib/easycast/assers/*.rb'
       also_reload 'lib/easycast/controller.rb'
       enable :reloader
     end
 
   ### Scenes configuration
 
-    def self.load_config(folder = SCENES_FOLDER)
+    def self.load_config(folder = Easycast.current_scenes_folder)
       # load the config and check it
       set :config, Config.load(folder).check!.ensure_assets!
       # initialize the walk
-      set :tour, FullTour.new(config)
+      set :tour, FullTour.new(config, nil, settings.scheduler)
       # install scheduler and configure it
       tour.interval(config.animation[:frequency]) do
         set_tour tour.next(true)
@@ -37,6 +38,7 @@ module Easycast
       set :scheduler, nil
       set :load_error, ex
     end
+    set :scheduler, nil
     load_config
 
   ### Station configurations
@@ -50,78 +52,74 @@ module Easycast
 
   ### Display and remote control
 
-    #
-    # Returns the .html file of the root page, allowing
-    # to choose a display
-    #
     get "/" do
       content_type :html
       serve Views::Home.new(settings.config, settings.tour.to_state)
     end
 
-    ##
-    ## Returns the .html file of the n-th display
-    ##
     get "/display/:i" do |i|
       content_type :html
       serve Views::Display.new(settings.config, settings.tour.to_state, i.to_i)
     end
 
-    ##
-    ## Returns the .html file of the splash screen
-    ##
     get '/splash' do
       content_type :html
       serve Views::Splash.new, Views::SplashLayout
     end
 
-    ##
-    ## Returns the .html file of the remote
-    ##
     get '/remote' do
       content_type :html
       serve Views::Remote.new(settings.config, settings.tour.to_state)
     end
 
-    ##
-    ## Returns the .html file of the doors
-    ##
     get '/doors' do
       content_type :html
       serve Views::Doors.new(settings.config, settings.tour.to_state)
     end
 
-    ##
-    ## Returns the .html file of the QR codes
-    ##
     get '/qr-codes' do
       content_type :html
       serve Views::QrCodes.new(settings.config, settings.tour.to_state)
     end
 
-    ##
-    ## Force all displays to refresh
-    ##
+  ### Source switcher
+
+  get '/switcher' do
+    content_type :html
+    serve Views::Switcher.new(settings.config, settings.tour.to_state)
+  end
+
+  post '/switch/:code' do |code|
+    folder = Easycast.each_scenes_folder.find{|f|
+      Digest::SHA1.hexdigest(f.expand_path.to_s) == code
+    }
+    if folder
+      puts "Setting scenes folder to #{folder}"
+      state_change{ settings.tour.pause } unless settings.tour.paused?
+      Easycast.set_current_scenes_folder(folder)
+      settings.load_config
+      notify
+    end
+    content_type :json
+    settings.tour.to_external_state.to_json
+  end
+
+  ### Distant execution of actions
+
+    get '/ssh-public-key' do
+      send_file "#{EASYCAST_USER_HOME}/.ssh/id_ed25519.pub"
+    end
+
     post '/refresh' do
       distant_exec("refresh-displays")
     end
 
-    ##
-    ## Force all displays to restart
-    ##
     post '/restart' do
       distant_exec("restart-displays")
     end
 
-    ##
-    ## Force all displays to restart
-    ##
     post '/reboot' do
       distant_exec("reboot")
-    end
-
-    get '/ssh-public-key' do
-      send_file "#{EASYCAST_USER_HOME}/.ssh/id_ed25519.pub"
     end
 
     def distant_exec(cmd)
@@ -134,33 +132,21 @@ module Easycast
 
   ### Walk
 
-    ##
-    ## Start a subtour on the i-th node
-    ##
     post '/tour/subtour/:i' do |i|
       set_tour settings.tour.sub_tour(i.to_i)
       serve_nothing
     end
 
-    ##
-    ## Updates the current walk tour to the i-th node
-    ##
     post '/tour/jump/:i' do |i|
       set_tour settings.tour.jump(i.to_i)
       serve_nothing
     end
 
-    ##
-    ## Moves the current walk tour to the next scene
-    ##
     post '/tour/next' do
       set_tour settings.tour.next
       serve_nothing
     end
 
-    ##
-    ## Moves the current walk tour to the previous scene
-    ##
     post '/tour/previous' do
       set_tour settings.tour.previous
       serve_nothing
@@ -209,10 +195,6 @@ module Easycast
       settings.set_tour(*args, &bl)
     end
 
-    ##
-    ## Returns the current state of the controller, i.e.
-    ## current node and scheduler state.
-    ##
     get '/state' do
       content_type :json
       settings.tour.to_external_state.to_json
@@ -235,7 +217,7 @@ module Easycast
       end
     end
 
-    def notify(state)
+    def notify(state = settings.tour.to_external_state)
       settings.notify(state)
     end
 
@@ -279,6 +261,7 @@ require_relative 'views/partial'
 require_relative 'views/home'
 require_relative 'views/display'
 require_relative 'views/remote'
+require_relative 'views/switcher'
 require_relative 'views/doors'
 require_relative 'views/error'
 require_relative 'views/splash_layout'

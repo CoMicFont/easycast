@@ -10,7 +10,7 @@ module Easycast
     DEFAULT_OPTIONS = {
       source: Path.backfind('[Gemfile]')/'config',
       target: Path('/'),
-      scenes_folder: SCENES_FOLDER,
+      scenes_folder: Easycast.current_scenes_folder,
       command: nil,
       station: nil,
       colorize: true,

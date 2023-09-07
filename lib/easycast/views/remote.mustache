@@ -2,32 +2,25 @@
   {{{tree}}}
 
   <ul class="button-list bottom-buttons prev-next">
-    <li>
-      <a href="{{previous_href}}"><i class="fa fa-backward" aria-hidden="true"></i></a>
+    <li class="dynamic">
+      <a href="{{previous_href}}">
+        <i class="fa fa-backward" aria-hidden="true"></i>
+      </a>
     </li>
-    <li>
-      <a href="{{scheduler_toggle_href}}"><i id="scheduler_icon" class="fa fa-{{scheduler_icon}}" aria-hidden="true"></i></a>
+    <li class="dynamic">
+      <a href="{{scheduler_toggle_href}}">
+        <i id="scheduler_icon" class="fa fa-{{scheduler_icon}}" aria-hidden="true"></i>
+      </a>
     </li>
-    <li>
-      <a href="{{next_href}}"><i class="fa fa-forward" aria-hidden="true"></i></a>
-    </li>
-    <li class="right">
-      <a id="cogs-toggle"><i class="fa fa-cogs" aria-hidden="true"></i></a>
-    </li>
-  </ul>
-
-  <ul class="button-list bottom-buttons cogs" style="display:none">
-    <li>
-      <a href="{{refresh_href}}"><i class="fa fa-refresh" aria-hidden="true"></i></a>
-    </li>
-    <li>
-      <a href="{{restart_href}}" data-confirm="true"><i class="fa fa-bolt" aria-hidden="true"></i><i class="fa fa-bolt" aria-hidden="true"></i></a>
-    </li>
-    <li>
-      <a href="{{reboot_href}}" data-confirm="true"><i class="fa fa-power-off" aria-hidden="true"></i></a>
+    <li class="dynamic">
+      <a href="{{next_href}}">
+        <i class="fa fa-forward" aria-hidden="true"></i>
+      </a>
     </li>
     <li class="right">
-      <a id="cogs-back"><i class="fa fa-long-arrow-left" aria-hidden="true"></i></a>
+      <a href="/switcher">
+        <i class="fa fa-cogs" aria-hidden="true"></i>
+      </a>
     </li>
   </ul>
 </main>

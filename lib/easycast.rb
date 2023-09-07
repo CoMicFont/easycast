@@ -1,6 +1,7 @@
 ENV['TZ'] = "Europe/Brussels"
 
 require 'path'
+require 'fileutils'
 require 'json'
 require 'finitio'
 require 'logger'
@@ -28,13 +29,11 @@ module Easycast
   # Logger used everywhere for debugging and info
   LOGGER = Logger.new(STDOUT)
 
-  # Main scenes folder
-  SCENES_FOLDER = if folder = ENV['EASYCAST_SCENES_FOLDER']
-    Path(folder)
-  elsif (folder = ROOT_FOLDER/("scenes")).directory?
-    folder
+  # Where some sources can be found...
+  SOURCES_FOLDERS = if ENV['EASYCAST_SOURCE_FOLDERS']
+    ENV['EASYCAST_SOURCE_FOLDERS'].split(",").map { |p| Path(p) }
   else
-    ROOT_FOLDER/("documentation")
+    [ROOT_FOLDER]
   end
 
   # Public assets folder
@@ -48,6 +47,31 @@ module Easycast
 
   # Whether we want sinatra to reload everytime
   DEVELOPMENT_MODE = (ENV['RACK_ENV'].to_s =~ /^devel/i)
+
+  def each_scenes_folder
+    return to_enum(:each_scenes_folder) unless block_given?
+
+    SOURCES_FOLDERS.each do |folder|
+      folder.glob('**/scenes.yml').each {|scenes_file|
+        yield scenes_file.parent
+      }
+    end
+  end
+  module_function :each_scenes_folder
+
+  def current_scenes_folder
+    path = ROOT_FOLDER/'scenes'
+    set_current_scenes_folder(each_scenes_folder.first) unless path.exists?
+    path
+  end
+  module_function :current_scenes_folder
+
+  def set_current_scenes_folder(folder)
+    target = (ROOT_FOLDER/'scenes')
+    target.unlink if target.exists?
+    FileUtils.ln_s folder.to_s, target.to_s, force: true
+  end
+  module_function :set_current_scenes_folder
 
 end
 require_relative 'easycast/error'

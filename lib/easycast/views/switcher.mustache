@@ -1,0 +1,39 @@
+<main class="switcher">
+  <ul class="button-list">
+    <li class="dynamic">
+      <a href="{{refresh_href}}" data-confirm="true">
+        <i class="fa fa-refresh" aria-hidden="true"></i>
+        Rafraîchir les écrans
+      </a>
+    </li>
+    <li class="dynamic">
+      <a href="{{restart_href}}" data-confirm="true">
+        <i class="fa fa-bolt" aria-hidden="true"></i><i class="fa fa-bolt" aria-hidden="true"></i>
+        Fermer & réouvrir
+      </a>
+    </li>
+    <li class="dynamic">
+      <a href="{{reboot_href}}" data-confirm="true">
+        <i class="fa fa-power-off" aria-hidden="true"></i>
+        Redémarrer l'ensemble
+      </a>
+    </li>
+    <li>
+      <a>Changer d'exposition</a>
+      <ul class="button-list">
+        {{#source_folders}}
+        <li class="dynamic {{css_class}}" data-confirm="true">
+          <a href="/switch/{{code}}" data-redirect="/remote">{{name}}</a>
+        </li>
+        {{/source_folders}}
+      </ul>
+    </li>
+  </ul>
+  <ul class="button-list bottom-buttons cogs">
+    <li class="right">
+      <a href="/remote" data-direct="true">
+        <i class="fa fa-long-arrow-left" aria-hidden="true"></i>
+      </a>
+    </li>
+  </ul>
+</main>

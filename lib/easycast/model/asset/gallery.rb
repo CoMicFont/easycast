@@ -29,7 +29,6 @@ module Easycast
     private
 
       def generate_images!
-        puts "\nGenerating gallery ..."
         @generated = @assets.map do |a|
           a.ensure!
           a.external_path
