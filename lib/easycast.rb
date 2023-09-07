@@ -1,6 +1,7 @@
 ENV['TZ'] = "Europe/Brussels"
 
 require 'path'
+require 'json'
 require 'finitio'
 require 'logger'
 require 'sinatra'
@@ -9,6 +10,7 @@ require 'sprockets'
 require 'mustache'
 require 'rufus/scheduler'
 require 'digest'
+require 'securerandom'
 module Easycast
 
   # Version of Easycast software
@@ -51,6 +53,7 @@ end
 require_relative 'easycast/error'
 require_relative 'easycast/model/config'
 require_relative 'easycast/model/scene'
+require_relative 'easycast/model/conversion'
 require_relative 'easycast/model/station'
 require_relative 'easycast/model/cast'
 require_relative 'easycast/model/asset'

@@ -1,27 +1,28 @@
 module Easycast
   class Asset
-    class Layers < Compound
+    class Layers < Asset
 
-      def initialize(path, config)
-        super(path, config)
+      def initialize(cast, path, config)
+        super(cast, path, config)
         @options = path[:options] || { }
-        @assets  = path[:images].map { |i| Image.new(i, config) }
-        @sha = Digest::SHA1.hexdigest(@assets.map{|a| a.path }.join('/'))
-        @external_path = "_layers/#{@sha}.png"
-        @file = config.folder/("assets/#{@external_path}")
+        @assets  = path[:images].map { |i| Image.new(cast, i, config) }
+        @sha = transformed_sha({
+          paths: @assets.map{|a| a.path }
+        })
+        @external_path = "/assets/_layers/#{@sha}.png"
+        @file = config.folder/("assets/_layers/#{@sha}.png")
       end
 
       def ensure!
-        super
         generate_layer!
       end
 
       def all_resources
-        [ { path: "/#{@external_path}", as: "image" } ]
+        [ { path: "#{@external_path}", as: "image" } ]
       end
 
       def to_html(state, cast)
-        %Q{<img src="#{ASSETS_PREFIX}/#{@external_path}">}
+        %Q{<img src="#{@external_path}">}
       end
 
     private
@@ -29,23 +30,17 @@ module Easycast
       def generate_layer!
         return if @file.exists?
 
+        puts "\nGenerating layer -> `#{@file}`"
         @file.parent.mkdir_p unless @file.parent.exists?
-        puts "Generating asset `#{@file}`"
-        Path("/tmp/easycast").mkdir_p
+
         sources = @assets.map{|a|
-          source = "/tmp/easycast/#{a.file.basename}"
-          cmd = convert(a.file, source)
-          puts "#{cmd}"
-          `#{cmd}`
-          source
+          a.ensure!
+          a.target_image
         }
-        [
-          %Q{convert #{sources.join(' ')} -background none -flatten #{@file}},
-          convert(@file, @file)
-        ].each do |cmd|
-          puts "#{cmd}"
-          `#{cmd}`
-        end
+
+        cmd = %Q{convert #{sources.join(' ')} -background none -flatten #{@file}}
+        puts "#{cmd}"
+        `#{cmd}`
       end
 
     end # class Layers

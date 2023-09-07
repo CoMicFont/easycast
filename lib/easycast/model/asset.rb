@@ -1,4 +1,3 @@
-require 'securerandom'
 module Easycast
   #
   # An Asset is some media that can be shown on a display, such
@@ -7,31 +6,30 @@ module Easycast
   #
   class Asset
 
-    ASSETS_PREFIX = "/assets"
-
-    def initialize(path, config)
+    def initialize(cast, path, config)
+      @cast = cast
       @path = path
       @config = config
     end
-    attr_reader :path, :config
+    attr_reader :cast, :path, :config
 
     def unique_id
       @unique_id ||= SecureRandom.uuid
     end
 
-    def self.for(path, config)
+    def self.for(cast, path, config)
       case path
-      when /.html$/  then Asset::Html.new(path, config)
-      when /.svg$/   then Asset::Svg.new(path, config)
-      when /.png$/   then Asset::Png.new(path, config)
-      when /.jpe?g$/ then Asset::Jpg.new(path, config)
-      when /.mp4$/   then Asset::Mp4.new(path, config)
-      when /.webm$/  then Asset::Webm.new(path, config)
-      when /.ogg$/   then Asset::Ogg.new(path, config)
+      when /.html$/  then Asset::Html.new(cast, path, config)
+      when /.svg$/   then Asset::Svg.new(cast, path, config)
+      when /.png$/   then Asset::Png.new(cast, path, config)
+      when /.jpe?g$/ then Asset::Jpg.new(cast, path, config)
+      when /.mp4$/   then Asset::Mp4.new(cast, path, config)
+      when /.webm$/  then Asset::Webm.new(cast, path, config)
+      when /.ogg$/   then Asset::Ogg.new(cast, path, config)
       when Hash
         case path[:type]
-        when 'gallery' then Asset::Gallery.new(path, config)
-        when 'layers'  then Asset::Layers.new(path, config)
+        when 'gallery' then Asset::Gallery.new(cast, path, config)
+        when 'layers'  then Asset::Layers.new(cast, path, config)
         else raise ArgumentError, "Unknown type `#{path[:type]}`"
         end
       else
@@ -47,14 +45,37 @@ module Easycast
       raise NotImplementedError
     end
 
+    def conversion_names
+
+    end
+
+    def conversions
+      conversion_names = config.display_by_num(cast.display)[:conversions] || []
+      conversion_names.map {|name|
+        config.conversion_by_name!(name).command
+      }
+    end
+
+    def transformed_sha(data)
+      Digest::SHA1.hexdigest(data.merge({
+        conversions: conversions,
+      }).to_json)
+    end
+
     def convert(source, target)
-      %Q{convert -resize "1920x1080\>" #{source} #{target}}
+      result = conversions.inject(source) do |src, command|
+        Path.tempfile(['easycast', src.ext]).tap do |tmp|
+          cmd = command.gsub(/\$source/, src.to_s).gsub(/\$target/, tmp.to_s)
+          puts cmd
+          `#{cmd}`
+        end
+      end
+      result.mv(target)
     end
 
   end # class Asset
 end # module Easycast
 require_relative 'asset/simple_file'
-require_relative 'asset/compound'
 
 require_relative 'asset/html'
 require_relative 'asset/svg'

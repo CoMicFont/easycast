@@ -12,8 +12,13 @@ module Easycast
     end
     attr_reader :config
 
+    # override ruby's display method
+    def display
+      self[:display]
+    end
+
     def assets
-      @assets ||= self[:assets].map{|a| Asset.for(a, config) }
+      @assets ||= self[:assets].map{|a| Asset.for(self, a, config) }
     end
 
     def ensure_assets!

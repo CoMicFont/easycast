@@ -71,19 +71,26 @@ module Easycast
       DisplayPosition = String( s | s =~ /\\d+.\\d+/ )
 
       Display = {
-        identifier: Integer
-        size: DisplaySize
-        position: DisplayPosition
+        identifier  :  Integer
+        size        :  DisplaySize
+        position    :  DisplayPosition
+        conversions :? [String]
+      }
+
+      Conversion = {
+        name     : String
+        command  : String
       }
 
       # Main, a set of scenes and a hierarchical structure
       # presenting them
       {
-        scenes    :  [Scene]
-        nodes     :  [Node]
-        stations  :? [Station]
-        animation :? AnimationOption
-        videos    :? VideoOptions
+        scenes      :  [Scene]
+        nodes       :  [Node]
+        animation   :? AnimationOption
+        videos      :? VideoOptions
+        conversions :? [Conversion]
+        stations    :? [Station]
       }
     FIO
 
@@ -130,6 +137,10 @@ module Easycast
       _stations.each(&block)
     end
 
+    def display_by_num(num)
+      each_display.find{|d| d[:identifier] == num }
+    end
+
     def each_display
       return to_enum(:each_display) unless block_given?
 
@@ -145,6 +156,13 @@ module Easycast
       s = @stations_by_name[name]
       name = find_closest_name(name, @stations_by_name.keys) unless s
       @stations_by_name[name]
+    end
+
+    def conversion_by_name!(name)
+      @conversions_by_name ||= _conversions.each_with_object({}){|c,h| h[c[:name]] = c }
+      @conversions_by_name[name].tap {|c|
+        raise "Unknown conversion #{name}" unless c
+      }
     end
 
     def ensure_assets!
@@ -184,6 +202,10 @@ module Easycast
     end
 
   private
+
+    def _conversions
+      @_conversions ||= (self[:conversions] || []).map{|c| Conversion.new(c, self) }
+    end
 
     def _scenes
       @_scenes ||= scenes.map{|s| Scene.new(s, self) }

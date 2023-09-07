@@ -2,14 +2,17 @@ module Easycast
   class Asset
     class Image < SimpleFile
 
-      def initialize(path, config)
-        super(path, config)
+      def initialize(cast, path, config)
+        super(cast, path, config)
         @file = config.folder/"assets"/path
         @target = config.folder/"assets/_images"
-        @name = Digest::SHA1.hexdigest(path)
-        @external_path = "assets/_images/#{@name}#{@file.ext}"
-        @target_image = (@target/@name).sub_ext(@file.ext)
+        @sha = transformed_sha({
+          path: path
+        })
+        @external_path = "/assets/_images/#{@sha}#{@file.ext}"
+        @target_image = (@target/@sha).sub_ext(@file.ext)
       end
+      attr_reader :external_path, :target_image
 
       def ensure!
         generate_image!
@@ -20,23 +23,21 @@ module Easycast
       end
 
       def to_html(state, cast)
-        %Q{<img src="/#{@external_path}">}
+        %Q{<img src="#{@external_path}">}
       end
 
       def all_resources
-        [ { path: "/#{@external_path}", as: "image" } ]
+        [ { path: "#{@external_path}", as: "image" } ]
       end
 
       private
 
         def generate_image!
-          @target.mkdir_p unless @target.exists?
-          unless @target_image.exists?
-            puts "Generating image for `#{@external_path}`"
-            cmd = convert(@file, @target_image)
-            puts "#{cmd}"
-            `#{cmd}`
-          end
+          return if @target_image.exists?
+
+          @target.mkdir_p
+          puts "\nGenerating image #{path} -> `#{@external_path}`"
+          convert(@file, @target_image)
         end
 
     end

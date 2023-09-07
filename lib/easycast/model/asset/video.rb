@@ -3,13 +3,18 @@ module Easycast
   class Asset
     class Video < SimpleFile
 
+      def initialize(cast, path, config)
+        super(cast, path, config)
+        @external_path = "/assets/#{path}"
+      end
+
       def to_html(state, cast)
         video_options = cast.videos || config.videos
         mode = state.scheduler.paused? ? :pause : :play
         loop = !!video_options[:loop][mode] ? "loop" : ""
         walk_on_end = video_options[:walk_on_end] && mode === :play
         tag = <<~HTML
-          <video id="#{unique_id}" playsinline autoplay muted #{loop} source style="width: 1920px; height: auto;" src="#{ASSETS_PREFIX}/#{@path}" type="#{video_type}">This browser does not support the video tag.</video>
+          <video id="#{unique_id}" playsinline autoplay muted #{loop} source style="width: 1920px; height: auto;" src="#{@external_path}" type="#{video_type}">This browser does not support the video tag.</video>
         HTML
         if walk_on_end
           tag += <<~HTML

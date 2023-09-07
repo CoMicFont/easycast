@@ -8,6 +8,9 @@ body.display {
   .asset img {
     background: transparent;
     animation: imageAnimation 1s linear;
+    position: absolute;
+    top: 0;
+    max-width: 100%;
   }
   article {
     padding: 2%;

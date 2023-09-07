@@ -1,16 +1,14 @@
 module Easycast
   class Asset
-    class Gallery < Compound
+    class Gallery < Asset
 
-      def initialize(path, config)
-        super(path, config)
+      def initialize(cast, path, config)
+        super(cast, path, config)
         @options = path[:options] || { interval: 2 }
-        @assets  = path[:images].map { |i| Image.new(i, config) }
-        @target = config.folder/"assets/_galleries"
+        @assets  = path[:images].map { |i| Image.new(cast, i, config) }
       end
 
       def ensure!
-        super
         generate_images!
       end
 
@@ -31,21 +29,10 @@ module Easycast
     private
 
       def generate_images!
-        @target.mkdir_p unless @target.exists?
-        @generated = []
-        @assets.each do |a|
-          name = Digest::SHA1.hexdigest(a.path)
-          file = (@target/name).sub_ext(a.file.ext)
-          unless file.exists?
-            puts "Generating gallery image for `#{a.path}`"
-            [
-              convert(a.file, file)
-            ].each do |cmd|
-              puts "#{cmd}"
-              `#{cmd}`
-            end
-          end
-          @generated << "#{ASSETS_PREFIX}/_galleries/#{name}#{a.file.ext}"
+        puts "\nGenerating gallery ..."
+        @generated = @assets.map do |a|
+          a.ensure!
+          a.external_path
         end
       end
 
