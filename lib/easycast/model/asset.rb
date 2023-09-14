@@ -45,8 +45,8 @@ module Easycast
       raise NotImplementedError
     end
 
-    def conversion_names
-
+    def display
+      config.display_by_num(cast.display)
     end
 
     def conversions
