@@ -1,0 +1,4 @@
+#!/bin/sh
+hostname=$(hostname)
+displays=$(curl http://easycast-master.local/stations/$hostname/displays-envvar)
+sed -i "s/EASYCAST_DISPLAYS=.*/EASYCAST_DISPLAYS=$displays/g" /etc/environment

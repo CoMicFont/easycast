@@ -50,6 +50,13 @@ module Easycast
       s.to_h.to_yaml
     end
 
+    get '/stations/:station/displays-envvar' do |station|
+      s = settings.config.station_by_name(station, true)
+      not_found unless s
+      content_type "text/plain"
+      s.displays_envvar
+    end
+
   ### Display and remote control
 
     get "/" do
