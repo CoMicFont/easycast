@@ -19,7 +19,7 @@
   </div>
 </aside>
 
-<script>function splashWait(t){var n=new XMLHttpRequest;n.onreadystatechange=function(){4==this.readyState&&200==this.status?window.location=t:4==this.readyState&&setTimeout(function(){splashWait(t)},2500)},console.log("Trying to reach master at "+t),n.open("GET",t,!0),n.send()}function splashConnect(){function t(){window.location=window.location}const n=window.location.search,o=new URLSearchParams(n),a=decodeURIComponent(o.get("target")||"http://easycast/");setTimeout(t,15e3),setTimeout(function(){splashWait(a)},1500)}function splashReconnect(){jQuery("aside.splash").show(),splashWait(window.location)}</script>
+<script>function splashWait(t){var n=new XMLHttpRequest;n.onreadystatechange=function(){4==this.readyState&&200==this.status?window.location=t:4==this.readyState&&setTimeout(function(){splashWait(t)},2500)},console.log("Trying to reach master at "+t),n.open("GET",t,!0),n.send()}function splashConnect(){function t(){window.location=window.location}const n=window.location.search,o=new URLSearchParams(n),e=decodeURIComponent(o.get("target")||"http://easycast/");setTimeout(t,15e3),setTimeout(function(){splashWait(e)},1e3)}function splashReconnect(){jQuery("aside.splash").show(),splashWait(window.location)}</script>
 <script>splashConnect();</script>
 </body>
 </html>

@@ -15,7 +15,7 @@ require 'securerandom'
 module Easycast
 
   # Version of Easycast software
-  VERSION = "1.9.0"
+  VERSION = "1.9.1"
 
   # Where easycast (the user) home folder is
   EASYCAST_USER_HOME = ENV['EASYCAST_USER_HOME'] || Dir.home
