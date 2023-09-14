@@ -18,4 +18,4 @@ chromium-browser \
   --disable-session-crashed-bubble \
   --disk-cache-size=104857600 \
   --user-data-dir="$H/Documents/Profiles/$DISPLAY_NUM" \
-  "file://$H/easycast/public/webassets/splash.html?target=http://easymaster/display/$DISPLAY_NUM"
+  "file://$H/easycast/public/webassets/splash.html?target=http://easycast-master.local/display/$DISPLAY_NUM"

@@ -3,5 +3,5 @@ H=${EASYCAST_USER_HOME:-$HOME}
 U=$(echo $H | cut -f3 -d'/')
 if [ ! -f $H/.ssh/authorized_keys ]
 then
-  su $U -c "mkdir -p $H/.ssh && curl http://easymaster/ssh-public-key > $H/.ssh/authorized_keys"
+  su $U -c "mkdir -p $H/.ssh && curl http://easycast-master.local/ssh-public-key > $H/.ssh/authorized_keys"
 fi
