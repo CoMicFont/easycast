@@ -98,7 +98,7 @@ module Easycast
       state_change{ settings.tour.pause } unless settings.tour.paused?
       Easycast.set_current_scenes_folder(folder)
       settings.load_config
-      notify
+      settings.notify_state
     end
     content_type :json
     settings.tour.to_external_state.to_json
