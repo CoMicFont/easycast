@@ -1,8 +1,6 @@
 #!/bin/sh
-H=${EASYCAST_USER_HOME:-$HOME}
-U=$(echo $H | cut -f3 -d'/')
-if [ ! -f $H/.ssh/id_ed25519 ]
+if [ ! -f ~/.ssh/id_ed25519 ]
 then
   hostname=$(hostname)
-  su $U -c "ssh-keygen -t ed25519 -N '' -f $H/.ssh/id_ed25519 -C 'easycast @ $hostname'"
+  ssh-keygen -t ed25519 -N '' -f ~/.ssh/id_ed25519 -C 'easycast @ $hostname'
 fi
