@@ -2,5 +2,5 @@
 if [ ! -f ~/.ssh/id_ed25519 ]
 then
   hostname=$(hostname)
-  ssh-keygen -t ed25519 -N '' -f ~/.ssh/id_ed25519 -C 'easycast @ $hostname'
+  ssh-keygen -t ed25519 -N '' -f ~/.ssh/id_ed25519 -C "easycast @ $hostname"
 fi

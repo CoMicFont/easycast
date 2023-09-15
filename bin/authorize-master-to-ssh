@@ -1,5 +1,2 @@
 #!/bin/sh
-if [ ! -f ~/.ssh/authorized_keys ]
-then
-  mkdir -p ~/.ssh && curl http://easycast-master.local/ssh-public-key > ~/.ssh/authorized_keys
-fi
+mkdir -p ~/.ssh && curl http://easycast-master.local/ssh-public-key > ~/.ssh/authorized_keys
