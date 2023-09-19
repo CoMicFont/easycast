@@ -32,6 +32,10 @@ module Easycast
         "/reboot"
       end
 
+      def upgrade_href
+        "/upgrade"
+      end
+
       def main_script
         "jQuery(function(){ refresh(#{state_json}, refreshSwitcher); });"
       end

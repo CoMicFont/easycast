@@ -125,6 +125,10 @@ module Easycast
       distant_exec("reboot")
     end
 
+    post '/upgrade' do
+      distant_exec("upgrade")
+    end
+
     def distant_exec(cmd)
       settings.config.each_station.map{|station|
         ip = "easycast-#{station[:name]}.local"
