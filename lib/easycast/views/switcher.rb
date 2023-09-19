@@ -24,10 +24,6 @@ module Easycast
         end
       end
 
-      def refresh_href
-        "/refresh"
-      end
-
       def restart_href
         "/restart"
       end

@@ -117,10 +117,6 @@ module Easycast
       send_file "#{EASYCAST_USER_HOME}/.ssh/id_ed25519.pub"
     end
 
-    post '/refresh' do
-      distant_exec("refresh-displays")
-    end
-
     post '/restart' do
       distant_exec("restart-displays")
     end
