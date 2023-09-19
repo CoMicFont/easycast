@@ -1,4 +1,7 @@
 #!/bin/sh
 hostname=$(hostname)
-displays=$(curl --retry 5 --retry-max-time 120 --retry-connrefused http://easycast-master.local/stations/$hostname/displays-envvar)
-sed -i "s/EASYCAST_DISPLAYS=.*/EASYCAST_DISPLAYS=$displays/g" /etc/environment
+displays=$(curl --retry 5 --retry-max-time 120 --retry-connrefused --fail http://easycast-master.local/stations/$hostname/displays-envvar)
+if [ $displays ]
+then
+  sed -i "s/EASYCAST_DISPLAYS=.*/EASYCAST_DISPLAYS=$displays/g" /etc/environment
+fi

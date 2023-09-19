@@ -1,2 +1,3 @@
 #!/bin/sh
-mkdir -p ~/.ssh && curl --retry 5 --retry-max-time 120 --retry-connrefused http://easycast-master.local/ssh-public-key > ~/.ssh/authorized_keys
+mkdir -p ~/.ssh
+curl --retry 5 --retry-max-time 120 --retry-connrefused --fail http://easycast-master.local/ssh-public-key -o ~/.ssh/authorized_keys
